@@ -220,7 +220,7 @@ export function AppSidebar({
                   <span className="text-primary font-semibold text-sm">DR</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-primary truncate">DÃ´tor</p>
+                  <p className="text-sm font-medium text-primary truncate">Dôtor</p>
                   <p className="text-xs text-muted-foreground truncate">email@medms.com</p>
                 </div>
                 <Button
