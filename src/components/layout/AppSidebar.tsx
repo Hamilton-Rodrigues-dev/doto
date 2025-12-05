@@ -1,0 +1,242 @@
+// src/components/layout/AppSidebar.tsx
+import { NavLink, useLocation } from "react-router-dom";
+import {
+  LayoutDashboard,
+  ClipboardList,
+  Calendar,
+  CheckSquare,
+  Users,
+  DollarSign,
+  Bot,
+  LogOut,
+  X,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import logoSvg from "@/assets/logo.svg";
+import sidebarToggleIcon from "@/assets/sidebar-toggle.svg";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Button } from "@/components/ui/button";
+
+const menuItems = [
+  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+  { label: "Consultas", icon: ClipboardList, path: "/consultas" },
+  { label: "Agendamentos", icon: Calendar, path: "/agendamentos" },
+  { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
+  { label: "Pacientes", icon: Users, path: "/pacientes" },
+  { label: "Financeiro", icon: DollarSign, path: "/financeiro" },
+  { label: "Agentes", icon: Bot, path: "/dashboard/agentes" },
+];
+
+interface AppSidebarProps {
+  collapsed: boolean;
+  onToggle: () => void;
+  isMobile?: boolean;
+  open?: boolean;
+  onNavigate?: () => void;
+}
+
+export function AppSidebar({
+  collapsed,
+  onToggle,
+  isMobile = false,
+  open = true,
+  onNavigate,
+}: AppSidebarProps) {
+  const location = useLocation();
+
+  const handleLogout = () => {
+    window.location.href = "/";
+  };
+
+  const handleNavClick = () => {
+    if (isMobile && onNavigate) {
+      onNavigate();
+    }
+  };
+
+  return (
+    <>
+      {/* Backdrop no mobile */}
+      {isMobile && open && (
+        <div
+          className="fixed inset-0 bg-black/40 z-40"
+          onClick={onToggle}
+          aria-hidden="true"
+        />
+      )}
+
+      <aside
+        className={cn(
+          "fixed left-0 top-0 h-screen bg-card border-r border-border flex flex-col z-50",
+          "transition-all duration-300 ease-in-out transform",
+          collapsed ? "w-[72px]" : "w-[272px]",
+          isMobile && !open && "-translate-x-full pointer-events-none",
+          isMobile && open && "pointer-events-auto shadow-lg",
+          !isMobile && "translate-x-0" // desktop sempre visível
+        )}
+        aria-hidden={isMobile && !open}
+      >
+        {/* Logo + Toggle */}
+        <div
+          className={cn(
+            "border-b border-muted flex bg-card",
+            collapsed
+              ? "flex-col items-center py-4 px-2 gap-4"
+              : "flex-row items-center justify-between h-[119px] px-6"
+          )}
+        >
+          {/* Logo */}
+          <div
+            className={cn(
+              "flex items-center",
+              collapsed ? "justify-center gap-0 px-2" : "gap-3"
+            )}
+          >
+            <img
+              src={logoSvg}
+              alt="Logo Dôtor"
+              className="w-[40px] h-[40px]"
+            />
+            {!collapsed && (
+              <div>
+                <h1 className="font-bold text-lg text-[#003062]">Dôtor</h1>
+                <p className="font-bold text-lg text-primary">Dôtor</p>
+              </div>
+            )}
+          </div>
+
+          {/* Botão toggle / fechar */}
+          <button
+            onClick={onToggle}
+            className={cn(
+              "flex items-center justify-center hover:opacity-80",
+              collapsed && "w-full"
+            )}
+            aria-label={
+              isMobile
+                ? "Fechar menu"
+                : collapsed
+                ? "Expandir sidebar"
+                : "Recolher sidebar"
+            }
+          >
+            {isMobile ? (
+              <X className="w-6 h-6 text-foreground" />
+            ) : (
+              <img
+                src={sidebarToggleIcon}
+                alt="Toggle sidebar"
+                className={cn("w-6 h-6", collapsed && "rotate-180")}
+              />
+            )}
+          </button>
+        </div>
+
+        {/* Menu */}
+        <nav className="flex-1 py-6 px-3 overflow-y-auto">
+          {!collapsed && (
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-4">
+              Menu Principal
+            </p>
+          )}
+          <TooltipProvider delayDuration={0}>
+            <ul className="space-y-1">
+              {menuItems.map((item) => {
+                const isActive = location.pathname === item.path;
+
+                const linkContent = (
+                  <NavLink
+                    to={item.path}
+                    className={cn(
+                      "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
+                      "transition-all duration-200",
+                      isActive
+                        ? "bg-[#dbeafe] text-[#0b68f7]"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                      collapsed && "justify-center px-2"
+                    )}
+                    onClick={handleNavClick}
+                  >
+                    <item.icon
+                      className={cn(
+                        "w-5 h-5 flex-shrink-0 transition-colors duration-200",
+                        isActive && "text-[#0b68f7]"
+                      )}
+                    />
+                    <span
+                      className={cn(
+                        "transition-opacity duration-200",
+                        collapsed ? "hidden" : "block"
+                      )}
+                    >
+                      {item.label}
+                    </span>
+                  </NavLink>
+                );
+
+                if (collapsed) {
+                  return (
+                    <li key={item.path}>
+                      <Tooltip>
+                        <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
+                        <TooltipContent side="right" sideOffset={10}>
+                          {item.label}
+                        </TooltipContent>
+                      </Tooltip>
+                    </li>
+                  );
+                }
+
+                return <li key={item.path}>{linkContent}</li>;
+              })}
+            </ul>
+          </TooltipProvider>
+        </nav>
+
+        {/* User Profile */}
+        <div className="p-4 border-t border-border">
+          <TooltipProvider delayDuration={0}>
+            {collapsed ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-primary font-semibold text-sm">DR</span>
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="right" sideOffset={10}>
+                  <p className="font-medium">Dôtor</p>
+                  <p className="text-xs text-muted-foreground">email@medms.com</p>
+                </TooltipContent>
+              </Tooltip>
+            ) : (
+              <div className="flex items-center gap-3 px-3 py-2">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+                  <span className="text-primary font-semibold text-sm">DR</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-primary truncate">Dôtor</p>
+                  <p className="text-xs text-muted-foreground truncate">email@medms.com</p>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleLogout}
+                  title="Sair"
+                >
+                  <LogOut className="w-4 h-4" />
+                </Button>
+              </div>
+            )}
+          </TooltipProvider>
+        </div>
+      </aside>
+    </>
+  );
+}

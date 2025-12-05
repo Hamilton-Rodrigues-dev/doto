@@ -1,0 +1,139 @@
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================
+   CSS Variables - Design System Colors
+   Med MS - Medical Management System
+   ============================================ */
+
+@layer base {
+  :root {
+    /* === Semantic Color Tokens === */
+    /* Primary - Bright Blue (CTAs & Actions) */
+    --color-primary: 217 100% 50%;        /* #0B68F7 - Main brand color */
+    
+    /* Secondary - Same Blue */
+    --color-secondary: 217 100% 50%;      /* #0B68F7 - Secondary accent */
+    
+    /* Text Colors */
+    --color-text-primary: 0 0% 20%;       /* #333333 - Primary text */
+    --color-text-secondary: 213 13% 67%; /* #a0aab6 - Secondary text */
+    
+    /* Background & Surfaces */
+    --background: 0 0% 100%;              /* #FFFFFF - Main background */
+    --foreground: 0 0% 20%;               /* #333333 - Main text */
+    
+    /* Card surfaces */
+    --card: 0 0% 100%;                    /* #FFFFFF - Card background */
+    --card-foreground: 0 0% 20%;          /* #333333 - Card text */
+    
+    /* Popover */
+    --popover: 0 0% 100%;                 /* #FFFFFF */
+    --popover-foreground: 0 0% 20%;       /* #333333 */
+    
+    /* Primary - Blue */
+    --primary: 217 100% 50%;              /* #0B68F7 */
+    --primary-foreground: 0 0% 100%;      /* #FFFFFF */
+    
+    /* Secondary - Blue (Same as primary in this design) */
+    --secondary: 217 100% 50%;            /* #0B68F7 */
+    --secondary-foreground: 0 0% 100%;    /* #FFFFFF */
+    
+    /* Muted - Light Gray */
+    --muted: 0 0% 96%;                    /* #F4F4F5 */
+    --muted-foreground: 213 13% 67%;      /* #a0aab6 */
+    
+    /* Accent - Blue-Gray */
+    --accent: 213 13% 67%;                /* #a0aab6 */
+    --accent-foreground: 0 0% 100%;       /* #FFFFFF */
+    
+    /* Destructive */
+    --destructive: 0 84% 60%;             /* #D32F2F (inferred for errors) */
+    --destructive-foreground: 0 0% 100%;  /* #FFFFFF */
+    
+    /* Success */
+    --success: 120 100% 40%;              /* #28A745 (inferred for success) */
+    --success-foreground: 0 0% 20%;       /* #333333 */
+    
+    /* Warning */
+    --warning: 39 100% 50%;               /* #FFB200 (inferred for warning) */
+    --warning-foreground: 0 0% 20%;       /* #333333 */
+    
+    /* Info */
+    --info: 217 100% 50%;                 /* #0B68F7 - Blue */
+    --info-foreground: 0 0% 100%;         /* #FFFFFF */
+    
+    /* Borders & Inputs */
+    --border: 0 0% 88%;                   /* #E0E0E1 */
+    --input: 0 0% 96%;                    /* #F4F4F5 */
+    --ring: 217 100% 50%;                 /* #0B68F7 */
+    
+    --radius: 0.5rem;
+    
+    /* Sidebar */
+    --sidebar-background: 0 0% 100%;      /* #FFFFFF */
+    --sidebar-foreground: 213 13% 67%;    /* #a0aab6 */
+    --sidebar-primary: 217 100% 50%;      /* #0B68F7 */
+    --sidebar-primary-foreground: 0 0% 100%;   /* #FFFFFF */
+    --sidebar-accent: 0 0% 96%;           /* #F4F4F5 */
+    --sidebar-accent-foreground: 0 0% 20%;    /* #333333 */
+    --sidebar-border: 0 0% 88%;           /* #E0E0E1 */
+    --sidebar-ring: 217 100% 50%;         /* #0B68F7 */
+    
+    /* Custom tokens */
+    --text-primary: 0 0% 20%;             /* #333333 */
+    --text-secondary: 213 13% 67%;        /* #a0aab6 */
+    --text-muted: 0 0% 88%;               /* #E0E0E1 */
+    --surface-elevated: 0 0% 100%;        /* #FFFFFF */
+    
+    /* Medical/Dashboard specific */
+    --login-bg: 217 100% 50%;             /* #0B68F7 - Login screen */
+    --button-border: 217 100% 50%;        /* #0B68F7 - Button borders */
+  }
+
+  .dark {
+    --background: 222 13% 9%;             /* #1A1F2E - Dark background */
+    --foreground: 0 0% 100%;              /* #FFFFFF */
+    --card: 222 13% 13%;                  /* #252D3F - Dark card */
+    --card-foreground: 0 0% 100%;         /* #FFFFFF */
+    --popover: 222 13% 13%;               /* #252D3F */
+    --popover-foreground: 0 0% 100%;      /* #FFFFFF */
+    --primary: 217 100% 50%;              /* #0B68F7 */
+    --primary-foreground: 0 0% 100%;      /* #FFFFFF */
+    --secondary: 217 100% 50%;            /* #0B68F7 */
+    --secondary-foreground: 0 0% 100%;    /* #FFFFFF */
+    --muted: 222 13% 18%;                 /* #333844 */
+    --muted-foreground: 213 13% 67%;      /* #a0aab6 */
+    --accent: 217 100% 50%;               /* #0B68F7 */
+    --accent-foreground: 0 0% 100%;       /* #FFFFFF */
+    --destructive: 0 84% 60%;             /* #FF4757 */
+    --destructive-foreground: 0 0% 100%;  /* #FFFFFF */
+    --border: 222 13% 22%;                /* #3C4654 */
+    --input: 222 13% 18%;                 /* #333844 */
+    --ring: 217 100% 50%;                 /* #0B68F7 */
+    --sidebar-background: 222 13% 9%;     /* #1A1F2E */
+    --sidebar-foreground: 0 0% 100%;      /* #FFFFFF */
+    --sidebar-primary: 217 100% 50%;      /* #0B68F7 */
+    --sidebar-primary-foreground: 0 0% 100%;   /* #FFFFFF */
+    --sidebar-accent: 222 13% 18%;        /* #333844 */
+    --sidebar-accent-foreground: 0 0% 100%;   /* #FFFFFF */
+    --sidebar-border: 222 13% 22%;        /* #3C4654 */
+    --sidebar-ring: 217 100% 50%;         /* #0B68F7 */
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: 'Inter', sans-serif;
+  }
+}
