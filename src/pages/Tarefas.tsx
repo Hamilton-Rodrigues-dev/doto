@@ -4,7 +4,7 @@ import { PageHeader } from "@/components/layout/PageHeader";
 import { DataTable, Column } from "@/components/ui/data-table";
 import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { Plus, Filter, Trash2 } from "lucide-react";
+import { Plus, Filter, Trash2, LayoutGrid, List } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +32,9 @@ import type {
   FiltroTarefas,
   StatusTarefa,
 } from "@/types/tarefa";
+import { TarefasKanban } from "@/components/TarefasKanban";
+import { STATUS_STYLE } from "@/lib/status-style";
+
 
 const tarefasData: Tarefa[] = [
   {
@@ -40,7 +43,7 @@ const tarefasData: Tarefa[] = [
     tarefa: "Enviar lista de suplementos",
     dataEntrega: "22/10/25",
     dtConsulta: "16/10/25",
-    status: "A Realizar",
+    status: "Não iniciado",
   },
   {
     id: 2,
@@ -48,7 +51,7 @@ const tarefasData: Tarefa[] = [
     tarefa: "Enviar prescrição",
     dataEntrega: "22/10/25",
     dtConsulta: "12/10/25",
-    status: "Realizada",
+    status: "Paralisado",
   },
 ];
 
@@ -57,7 +60,7 @@ const initialFormData: TarefaFormData = {
   tarefa: "",
   dataEntrega: "",
   dtConsulta: "",
-  status: "A Realizar",
+  status: "Não iniciado",
 };
 
 const initialFiltros: FiltroTarefas = {
@@ -83,6 +86,9 @@ export default function Tarefas() {
     dataInicial: "",
     dataFinal: "",
   });
+  type TaskViewMode = "table" | "kanban";
+
+  const [viewMode, setViewMode] = useState<TaskViewMode>("table");
 
   const [filtrosAtivos, setFiltrosAtivos] = useState(initialFiltros);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -107,9 +113,9 @@ export default function Tarefas() {
     }
 
     // Status filters
-    if (filtrosAtivos.tarefasRealizadas && t.status !== "Realizada")
+    if (filtrosAtivos.tarefasRealizadas && t.status !== "Finalizado")
       return false;
-    if (filtrosAtivos.tarefasPendentes && t.status !== "A Realizar")
+    if (filtrosAtivos.tarefasPendentes && t.status !== "Não iniciado")
       return false;
 
     return true;
@@ -232,11 +238,14 @@ export default function Tarefas() {
       label: "Status",
       sortable: true,
       render: (item) => (
-        <StatusBadge
-          status={item.status === "Realizada" ? "success" : "warning"}
-        >
-          {item.status}
-        </StatusBadge>
+       <span
+      className={`
+        inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
+        ${STATUS_STYLE[item.status].badge}
+      `}
+    >
+      {item.status}
+    </span>
       ),
     },
   ];
@@ -249,15 +258,35 @@ export default function Tarefas() {
         searchPlaceholder="Buscar tarefas"
         onSearch={setSearchTerm}
         actions={
-          <Button className="gap-2 w-full lg:w-auto" onClick={() => handleOpenModal()}>
-            <Plus className="w-4 h-4" />
-            Nova tarefa
-          </Button>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Button
+              variant="outline"
+              className="w-full lg:w-auto flex items-center justify-center"
+              onClick={() =>
+                setViewMode((prev) => (prev === "table" ? "kanban" : "table"))
+              }
+            >
+              {viewMode === "table" ? (
+                <LayoutGrid className="w-4 h-4" />
+              ) : (
+                <List className="w-4 h-4" />
+              )}
+            </Button>
+
+            <Button
+              className="gap-2 w-full lg:w-auto"
+              onClick={() => handleOpenModal()}
+            >
+              <Plus className="w-4 h-4" />
+              Nova tarefa
+            </Button>
+          </div>
         }
       />
 
       <div className="pt-4 md:p-8">
         <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
+          {/* header + botão Filtrar */}
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between p-4 border-border">
             <h2 className="text-lg font-semibold text-foreground">
               Listagem de tarefas
@@ -273,13 +302,30 @@ export default function Tarefas() {
             </Button>
           </div>
 
-          <DataTable
-            data={filteredTarefas}
-            columns={columns}
-            onRowClick={handleRowClick}
-            minWidth="auto"
-          />
+          {viewMode === "table" && (
+           <DataTable
+  data={filteredTarefas}
+  columns={columns}
+  onRowClick={handleRowClick}
+  minWidth="auto"
+  headerClassName="bg-blue-100"        // fundo
+  headerTextClassName="text-blue-700"  // texto + ícone
+/>
+
+          )}
         </div>
+
+        {viewMode === "kanban" && (
+          <div className="mt-6">
+            <TarefasKanban
+              tarefas={filteredTarefas}
+              onUpdateTarefas={setTarefas}
+              onTaskClick={handleRowClick}
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              onAddTask={(status) => handleOpenModal({ status } as any)}
+            />
+          </div>
+        )}
       </div>
 
       {/* Modal Nova/Editar Tarefa */}
