@@ -33,6 +33,8 @@ import type {
   StatusTarefa,
 } from "@/types/tarefa";
 import { TarefasKanban } from "@/components/TarefasKanban";
+import { STATUS_STYLE } from "@/lib/status-style";
+
 
 const tarefasData: Tarefa[] = [
   {
@@ -236,11 +238,14 @@ export default function Tarefas() {
       label: "Status",
       sortable: true,
       render: (item) => (
-        <StatusBadge
-          status={item.status === "Finalizado" ? "success" : "warning"}
-        >
-          {item.status}
-        </StatusBadge>
+       <span
+      className={`
+        inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
+        ${STATUS_STYLE[item.status].badge}
+      `}
+    >
+      {item.status}
+    </span>
       ),
     },
   ];
@@ -298,12 +303,15 @@ export default function Tarefas() {
           </div>
 
           {viewMode === "table" && (
-            <DataTable
-              data={filteredTarefas}
-              columns={columns}
-              onRowClick={handleRowClick}
-              minWidth="auto"
-            />
+           <DataTable
+  data={filteredTarefas}
+  columns={columns}
+  onRowClick={handleRowClick}
+  minWidth="auto"
+  headerClassName="bg-blue-100"        // fundo
+  headerTextClassName="text-blue-700"  // texto + ícone
+/>
+
           )}
         </div>
 
