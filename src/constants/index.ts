@@ -29,4 +29,4 @@ export const STATUS_PAGAMENTO = ["Pago", "Pendente"] as const;
 export const TIPOS_LANCAMENTO = ["Entrada", "Despesa"] as const;
 
 // Status de tarefa
-export const STATUS_TAREFA = ["A Realizar", "Realizada"] as const;
+export const STATUS_TAREFA = ["Não iniciado", "Em andamento", "Paralisado", "Finalizado"] as const;
