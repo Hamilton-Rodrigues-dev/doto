@@ -1,4 +1,4 @@
-export type StatusTarefa = "A Realizar" | "Realizada";
+export type StatusTarefa = "Não iniciado" | "Em andamento" | "Paralisado" | "Finalizado";
 
 export interface Tarefa {
   id: number;
