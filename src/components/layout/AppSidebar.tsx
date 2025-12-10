@@ -1,4 +1,4 @@
-// src/components/layout/AppSidebar.tsx
+﻿// src/components/layout/AppSidebar.tsx
 import { NavLink, useLocation } from "react-router-dom";
 import {
   LayoutDashboard,
@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
   { label: "Consultas", icon: ClipboardList, path: "/consultas" },
   { label: "Agendamentos", icon: Calendar, path: "/agendamentos" },
   { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
@@ -77,7 +77,7 @@ export function AppSidebar({
           collapsed ? "w-[72px]" : "w-[272px]",
           isMobile && !open && "-translate-x-full pointer-events-none",
           isMobile && open && "pointer-events-auto shadow-lg",
-          !isMobile && "translate-x-0" // desktop sempre visível
+          !isMobile && "translate-x-0" // desktop sempre visÃ­vel
         )}
         aria-hidden={isMobile && !open}
       >
@@ -94,7 +94,7 @@ export function AppSidebar({
           <div
             className={cn(
               "flex items-center",
-              collapsed ? "justify-center gap-0 px-2" : "gap-3"
+              collapsed ? "justify-end items-end gap-0 px-2" : "gap-3"
             )}
           >
             <img
@@ -104,7 +104,6 @@ export function AppSidebar({
             />
             {!collapsed && (
               <div>
-                <h1 className="font-bold text-lg text-[#003062]">Dôtor</h1>
                 <p className="font-bold text-lg text-primary">Dôtor</p>
               </div>
             )}
@@ -211,7 +210,7 @@ export function AppSidebar({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right" sideOffset={10}>
-                  <p className="font-medium">Dôtor</p>
+                  <p className="font-medium">DÃ´tor</p>
                   <p className="text-xs text-muted-foreground">email@medms.com</p>
                 </TooltipContent>
               </Tooltip>
@@ -240,3 +239,4 @@ export function AppSidebar({
     </>
   );
 }
+

@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from "@/assets/logo.png"; // ajuste o caminho se necessário
+import logo from "@/assets/logo.svg"; // ajuste o caminho se necessário
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Login() {
-  const navigate = useNavigate();
+ const navigate = useNavigate();
+  const { login } = useAuth(); // <-- Extrair a função 'login' do contexto!
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
 
@@ -20,23 +22,30 @@ export default function Login() {
       return;
     }
 
-    // Mock login
-    toast.success("Login realizado com sucesso!");
-    navigate("/dashboard");
-  };
+    // 1. CHAMADA REAL À FUNÇÃO DE LOGIN DO CONTEXTO
+    const loginSuccess = login({ email, senha });
 
+    if (loginSuccess) {
+      // 2. SE SUCESSO, ATUALIZA O ESTADO NO CONTEXTO E NAVEGA
+      toast.success("Login realizado com sucesso!");
+      navigate("/dashboard");
+    } else {
+      // 3. SE FALHA, MOSTRA ERRO
+      toast.error("E-mail ou senha incorretos.");
+    }
+  };
   return (
     <div className="min-h-screen w-full flex items-center justify-center bg-gradient-to-br from-background via-muted to-background p-4">
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center mb-8">
           <img
             src={logo}
-            alt="Lead Talks Logo"
+            alt="Dôto Logo"
             className="h-16 w-auto mb-4 rounded-lg"
           />
-          <h1 className="text-3xl font-bold text-center">Lead Talks</h1>
+          <h1 className="text-3xl font-bold text-center">Dôto</h1>
           <p className="text-muted-foreground text-center mt-2">
-            Gerencie seus leads com inteligência
+            Gerencie sua clinica com inteligência
           </p>
         </div>
 
@@ -86,7 +95,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          © 2025 Lead Talks. Todos os direitos reservados.
+          © 2025 Dôto. Todos os direitos reservados.
         </p>
       </div>
     </div>
