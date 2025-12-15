@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
+import Leads from "./pages/Leads";
 
 const queryClient = new QueryClient();
 
@@ -46,6 +47,7 @@ const App = () => (
               <Route path="/dashboard/agentes" element={<ProtectedRoute allowedTypes={["admin"]}><Agentes /></ProtectedRoute>} />
               <Route path="/dashboard/agentes/novo" element={<ProtectedRoute allowedTypes={["admin"]}><NovoAgente /></ProtectedRoute>} />
               <Route path="/dashboard/agentes/:id" element={<ProtectedRoute allowedTypes={["admin"]}><AgenteDetalhes /></ProtectedRoute>} />
+              <Route path="/leads" element={<ProtectedRoute allowedTypes={["admin"]}><Leads /></ProtectedRoute>} />
               <Route path="/dashboard/agentes/:id/integracoes" element={<ProtectedRoute allowedTypes={["admin"]}><Integracoes /></ProtectedRoute>} />
               <Route path="*" element={<NotFound />} />
             </Routes>

@@ -7,6 +7,7 @@ import {
   CheckSquare,
   Users,
   DollarSign,
+  Target,
   Bot,
   LogOut,
   X,
@@ -29,6 +30,7 @@ const menuItems = [
   { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
   { label: "Pacientes", icon: Users, path: "/pacientes" },
   { label: "Financeiro", icon: DollarSign, path: "/financeiro" },
+  { label: "Leads", icon: Target, path: "/leads" },
   { label: "Agentes", icon: Bot, path: "/dashboard/agentes" },
 ];
 
@@ -210,7 +212,7 @@ export function AppSidebar({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right" sideOffset={10}>
-                  <p className="font-medium">DÃ´tor</p>
+                  <p className="font-medium">Dôtor</p>
                   <p className="text-xs text-muted-foreground">email@medms.com</p>
                 </TooltipContent>
               </Tooltip>
@@ -221,7 +223,7 @@ export function AppSidebar({
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-primary truncate">Dôtor</p>
-                  <p className="text-xs text-muted-foreground truncate">email@medms.com</p>
+                  <p className="text-xs text-muted-foreground truncate">email@doto.com</p>
                 </div>
                 <Button
                   variant="ghost"
@@ -239,4 +241,3 @@ export function AppSidebar({
     </>
   );
 }
-
