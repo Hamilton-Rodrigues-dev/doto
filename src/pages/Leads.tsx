@@ -16,7 +16,7 @@ export default function Leads() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 pt-4">
         <Tabs defaultValue="leads" className="space-y-6">
           <TabsList className="grid w-full max-w-md grid-cols-2">
             <TabsTrigger value="leads">Leads</TabsTrigger>
