@@ -40,10 +40,10 @@ export default function Login() {
         <div className="flex flex-col items-center mb-8">
           <img
             src={logo}
-            alt="Dôto Logo"
+            alt="Dôtor Logo"
             className="h-16 w-auto mb-4 rounded-lg"
           />
-          <h1 className="text-3xl font-bold text-center">Dôto</h1>
+          <h1 className="text-3xl font-bold text-center">Dôtor</h1>
           <p className="text-muted-foreground text-center mt-2">
             Gerencie sua clinica com inteligência
           </p>
@@ -95,7 +95,7 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          © 2025 Dôto. Todos os direitos reservados.
+          © 2025 Dôtor. Todos os direitos reservados.
         </p>
       </div>
     </div>
