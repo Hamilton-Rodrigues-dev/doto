@@ -144,18 +144,7 @@ export function AgendamentoModal({
             <DialogTitle className="text-primary">
               {isPessoal ? "Novo compromisso" : "Novo agendamento"}
             </DialogTitle>
-            <div className="flex items-center gap-2">
-              {evento && (
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive"
-                  onClick={() => setShowDeleteConfirm(true)}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              )}
-            </div>
+      
           </div>
 
           <div className="space-y-4 py-4">
@@ -309,10 +298,17 @@ export function AgendamentoModal({
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={handleClose}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+              {evento && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-destructive"
+                  onClick={() => setShowDeleteConfirm(true)}
+                >
+                  <Trash2 className="w-4 h-4" />
+                </Button>
+              )}
+            
           </DialogFooter>
         </DialogContent>
       </Dialog>

@@ -335,16 +335,7 @@ export default function Tarefas() {
             <DialogTitle className="text-primary">
               {editingId ? "Editar Tarefa" : "Nova Tarefa"}
             </DialogTitle>
-            {editingId && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={() => setShowDeleteConfirm(true)}
-              >
-                <Trash2 className="w-5 h-5" />
-              </Button>
-            )}
+           
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -420,11 +411,23 @@ export default function Tarefas() {
             </div>
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCloseModal}>
+          <DialogFooter className="flex !justify-between items-center">
+             {editingId && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                <Trash2 className="w-5 h-5" />
+              </Button>
+            )}
+        <div className="flex items-center gap-4">
+              <Button variant="outline" onClick={handleCloseModal}>
               Cancelar
             </Button>
             <Button onClick={handleSave}>Salvar</Button>
+        </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
