@@ -25,12 +25,12 @@ import { Button } from "@/components/ui/button";
 
 const menuItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { label: "Consultas", icon: ClipboardList, path: "/consultas" },
+  { label: "Leads", icon: Target, path: "/leads" },
   { label: "Agendamentos", icon: Calendar, path: "/agendamentos" },
-  { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
+  { label: "Consultas", icon: ClipboardList, path: "/consultas" },
   { label: "Pacientes", icon: Users, path: "/pacientes" },
   { label: "Financeiro", icon: DollarSign, path: "/financeiro" },
-  { label: "Leads", icon: Target, path: "/leads" },
+  { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
   { label: "Agentes", icon: Bot, path: "/dashboard/agentes" },
 ];
 
@@ -101,12 +101,12 @@ export function AppSidebar({
           >
             <img
               src={logoSvg}
-              alt="Logo Dôtor"
+              alt="Logo Dôto"
               className="w-[40px] h-[40px]"
             />
             {!collapsed && (
               <div>
-                <p className="font-bold text-lg text-primary">Dôtor</p>
+                <p className="font-bold text-lg text-primary">Dôto</p>
               </div>
             )}
           </div>
@@ -212,7 +212,7 @@ export function AppSidebar({
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right" sideOffset={10}>
-                  <p className="font-medium">Dôtor</p>
+                  <p className="font-medium">Dôto</p>
                   <p className="text-xs text-muted-foreground">email@medms.com</p>
                 </TooltipContent>
               </Tooltip>
@@ -222,7 +222,7 @@ export function AppSidebar({
                   <span className="text-primary font-semibold text-sm">DR</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-primary truncate">Dôtor</p>
+                  <p className="text-sm font-medium text-primary truncate">Dôto</p>
                   <p className="text-xs text-muted-foreground truncate">email@doto.com</p>
                 </div>
                 <Button
