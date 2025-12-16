@@ -73,7 +73,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
           <div className="flex-1 flex items-center justify-center lg:justify-start">
             <h1 className="font-semibold pr-8 text-sm sm:text-base md:text-lg text-primary">
-              Dôtor
+              Dôto
             </h1> 
           </div>    
 
