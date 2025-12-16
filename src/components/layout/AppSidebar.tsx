@@ -22,16 +22,37 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { useEffect, useState } from "react";
 
-const menuItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
-  { label: "Leads", icon: Target, path: "/leads" },
-  { label: "Agendamentos", icon: Calendar, path: "/agendamentos" },
-  { label: "Consultas", icon: ClipboardList, path: "/consultas" },
-  { label: "Pacientes", icon: Users, path: "/pacientes" },
-  { label: "Financeiro", icon: DollarSign, path: "/financeiro" },
-  { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
-  { label: "Agentes", icon: Bot, path: "/dashboard/agentes" },
+
+const menuGroups = [
+  {
+    title: "Captação Inteligente",
+    items: [
+      { label: "Dashboard", icon: LayoutDashboard, path: "/dashboard" },
+      { label: "Leads", icon: Target, path: "/leads" },
+      { label: "Agendamentos", icon: Calendar, path: "/agendamentos" },
+      { label: "Agentes", icon: Bot, path: "/dashboard/agentes" },
+    ],
+  },
+  {
+    title: "Operação Clínica",
+    items: [
+      { label: "Consultas", icon: ClipboardList, path: "/consultas" },
+      { label: "Pacientes", icon: Users, path: "/pacientes" },
+      { label: "Tarefas", icon: CheckSquare, path: "/tarefas" },
+    ],
+  },
+  {
+    title: "Gestão Financeira",
+    items: [{ label: "Financeiro", icon: DollarSign, path: "/financeiro" }],
+  },
 ];
 
 interface AppSidebarProps {
@@ -50,6 +71,7 @@ export function AppSidebar({
   onNavigate,
 }: AppSidebarProps) {
   const location = useLocation();
+const [openGroups, setOpenGroups] = useState<string[]>([]);
 
   const handleLogout = () => {
     window.location.href = "/";
@@ -60,6 +82,17 @@ export function AppSidebar({
       onNavigate();
     }
   };
+  useEffect(() => {
+  const activeGroup = menuGroups.find((group) =>
+    group.items.some((item) =>
+      location.pathname.startsWith(item.path)
+    )
+  );
+
+  if (activeGroup) {
+    setOpenGroups([activeGroup.title]);
+  }
+}, [location.pathname]);
 
   return (
     <>
@@ -99,11 +132,7 @@ export function AppSidebar({
               collapsed ? "justify-end items-end gap-0 px-2" : "gap-3"
             )}
           >
-            <img
-              src={logoSvg}
-              alt="Logo Dôto"
-              className="w-[40px] h-[40px]"
-            />
+            <img src={logoSvg} alt="Logo Dôto" className="w-[40px] h-[40px]" />
             {!collapsed && (
               <div>
                 <p className="font-bold text-lg text-primary">Dôto</p>
@@ -141,61 +170,75 @@ export function AppSidebar({
         {/* Menu */}
         <nav className="flex-1 py-6 px-3 overflow-y-auto">
           {!collapsed && (
-            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider px-3 mb-4">
+            <p className="text-xs font-semibold text-primary uppercase tracking-wider px-3 mb-4">
               Menu Principal
             </p>
           )}
           <TooltipProvider delayDuration={0}>
-            <ul className="space-y-1">
-              {menuItems.map((item) => {
-                const isActive = location.pathname === item.path;
+            <Accordion
+            value={openGroups}
+  onValueChange={setOpenGroups}
+              type="multiple"
+              className="space-y-2"
+            >
+              {menuGroups.map((group) => (
+                <AccordionItem
+                  key={group.title}
+                  value={group.title}
+                  className="border-none"
+                >
+                  {!collapsed && (
+                    <AccordionTrigger className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide hover:no-underline">
+                      {group.title}
+                    </AccordionTrigger>
+                  )}
 
-                const linkContent = (
-                  <NavLink
-                    to={item.path}
-                    className={cn(
-                      "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
-                      "transition-all duration-200",
-                      isActive
-                        ? "bg-[#dbeafe] text-[#0b68f7]"
-                        : "text-muted-foreground hover:bg-muted hover:text-foreground",
-                      collapsed && "justify-center px-2"
-                    )}
-                    onClick={handleNavClick}
-                  >
-                    <item.icon
-                      className={cn(
-                        "w-5 h-5 flex-shrink-0 transition-colors duration-200",
-                        isActive && "text-[#0b68f7]"
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "transition-opacity duration-200",
-                        collapsed ? "hidden" : "block"
-                      )}
-                    >
-                      {item.label}
-                    </span>
-                  </NavLink>
-                );
+                  <AccordionContent className="space-y-1">
+                    {group.items.map((item) => {
+                      const isActive = location.pathname === item.path;
 
-                if (collapsed) {
-                  return (
-                    <li key={item.path}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>{linkContent}</TooltipTrigger>
-                        <TooltipContent side="right" sideOffset={10}>
-                          {item.label}
-                        </TooltipContent>
-                      </Tooltip>
-                    </li>
-                  );
-                }
+                      const linkContent = (
+                        <NavLink
+                          key={item.path}
+                          to={item.path}
+                          className={cn(
+                            "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
+                            isActive
+                              ? "bg-[#dbeafe] text-[#0b68f7]"
+                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                            collapsed && "justify-center px-2"
+                          )}
+                          onClick={handleNavClick}
+                        >
+                          <item.icon
+                            className={cn(
+                              "w-5 h-5",
+                              isActive && "text-[#0b68f7]"
+                            )}
+                          />
+                          {!collapsed && <span>{item.label}</span>}
+                        </NavLink>
+                      );
 
-                return <li key={item.path}>{linkContent}</li>;
-              })}
-            </ul>
+                      if (collapsed) {
+                        return (
+                          <Tooltip key={item.path}>
+                            <TooltipTrigger asChild>
+                              {linkContent}
+                            </TooltipTrigger>
+                            <TooltipContent side="right">
+                              {item.label}
+                            </TooltipContent>
+                          </Tooltip>
+                        );
+                      }
+
+                      return linkContent;
+                    })}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
           </TooltipProvider>
         </nav>
 
@@ -207,13 +250,17 @@ export function AppSidebar({
                 <TooltipTrigger asChild>
                   <div className="flex items-center justify-center">
                     <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-primary font-semibold text-sm">DR</span>
+                      <span className="text-primary font-semibold text-sm">
+                        DR
+                      </span>
                     </div>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right" sideOffset={10}>
                   <p className="font-medium">Dôto</p>
-                  <p className="text-xs text-muted-foreground">email@medms.com</p>
+                  <p className="text-xs text-muted-foreground">
+                    email@medms.com
+                  </p>
                 </TooltipContent>
               </Tooltip>
             ) : (
@@ -222,8 +269,12 @@ export function AppSidebar({
                   <span className="text-primary font-semibold text-sm">DR</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-primary truncate">Dôto</p>
-                  <p className="text-xs text-muted-foreground truncate">email@doto.com</p>
+                  <p className="text-sm font-medium text-primary truncate">
+                    Dôto
+                  </p>
+                  <p className="text-xs text-muted-foreground truncate">
+                    email@doto.com
+                  </p>
                 </div>
                 <Button
                   variant="ghost"
