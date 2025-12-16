@@ -114,7 +114,9 @@ export default function LeadsView({ pipelines, etapas }: LeadsViewProps) {
   };
 
   const handleSaveLead = (lead: Lead) => {
-    const leadAtual = lead.pipelineId ? lead : { ...lead, pipelineId: pipelineSelecionado };
+    const leadAtual = lead.pipelineId
+      ? lead
+      : { ...lead, pipelineId: pipelineSelecionado };
     const leadExiste = leads.find((l) => l.id === leadAtual.id);
 
     if (leadExiste) {
@@ -211,65 +213,69 @@ export default function LeadsView({ pipelines, etapas }: LeadsViewProps) {
 
   return (
     <div className="space-y-6">
-    <div className="flex lg:flex-row flex-col items-center space-y-6 lg:justify-between w-full">
-  <div className="relative w-full lg:w-[420px]">
-    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
-    <Input
-      placeholder="Buscar leads..."
-      value={busca}
-      onChange={(e) => setBusca(e.target.value)}
-      className="pl-10 h-12 bg-card"
-    />
-  </div>
-  <div className="flex w-full lg:w-auto gap-4">
-    <Select value={pipelineSelecionado} onValueChange={handlePipelineChange}>
-      <SelectTrigger className="w-full sm:w-56">
-        <SelectValue placeholder="Selecione o pipeline" />
-      </SelectTrigger>
-      <SelectContent>
-        {pipelines.map((pipeline) => (
-          <SelectItem key={pipeline.id} value={pipeline.id}>
-            {pipeline.nome}
-          </SelectItem>
-        ))}
-      </SelectContent>
-    </Select>
-   <div className="flex gap-1">
-     <Button
-      variant={visualizacao === "kanban" ? "default" : "outline"}
-      size="icon"
-      onClick={() => setVisualizacao("kanban")}
-    >
-      <LayoutGrid className="w-5 h-5" />
-    </Button>
-    <Button
-      variant={visualizacao === "lista" ? "default" : "outline"}
-      size="icon"
-      onClick={() => setVisualizacao("lista")}
-    >
-      <List className="w-5 h-5" />
-    </Button>
-   </div>
-            <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-3">
-
-          <Button
-            size="lg"
-            onClick={handleNovaLeadPadrao}
-            className="w-full sm:w-auto"
-          >
-            <Plus className="w-5 h-5 mr-2" />
-            Nova Lead
-          </Button>
+      <div className="flex lg:flex-row flex-col items-center  lg:justify-between w-full">
+        <div className="relative w-full lg:w-[420px]">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Input
+            placeholder="Buscar leads..."
+            value={busca}
+            onChange={(e) => setBusca(e.target.value)}
+            className="pl-10 h-10 bg-card"
+          />
         </div>
-  </div>
-</div>
-
+        <div className="flex items-center flex-wrap lg:flex-nowrap w-full lg:w-auto gap-4">
+          <Select
+            value={pipelineSelecionado}
+            onValueChange={handlePipelineChange}
+          >
+            <SelectTrigger className="w-full sm:w-56">
+              <SelectValue placeholder="Selecione o pipeline" />
+            </SelectTrigger>
+            <SelectContent>
+              {pipelines.map((pipeline) => (
+                <SelectItem key={pipeline.id} value={pipeline.id}>
+                  {pipeline.nome}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <div className="flex w-full gap-1">
+            <Button
+              className="w-full"
+              variant={visualizacao === "kanban" ? "default" : "outline"}
+              size="icon"
+              onClick={() => setVisualizacao("kanban")}
+            >
+              <LayoutGrid className="w-5 h-5" />
+            </Button>
+            <Button
+              className="w-full"
+              variant={visualizacao === "lista" ? "default" : "outline"}
+              size="icon"
+              onClick={() => setVisualizacao("lista")}
+            >
+              <List className="w-5 h-5" />
+            </Button>
+          </div>
+          <div className="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-3">
+            <Button
+              size="icon"
+              onClick={handleNovaLeadPadrao}
+              className="w-full p-4 sm:w-auto"
+            >
+              <Plus className="w-5 h-5 mr-2" />
+              Nova Lead
+            </Button>
+          </div>
+        </div>
+      </div>
 
       {!etapasDoPipeline.length && (
         <div className="flex items-center gap-2 p-3 rounded-lg bg-muted text-muted-foreground">
           <Info className="w-4 h-4" />
           <p className="text-sm">
-            Nenhuma etapa encontrada para este pipeline. Configure etapas na aba Pipelines.
+            Nenhuma etapa encontrada para este pipeline. Configure etapas na aba
+            Pipelines.
           </p>
         </div>
       )}
@@ -314,8 +320,6 @@ export default function LeadsView({ pipelines, etapas }: LeadsViewProps) {
         onCreateMeeting={handleCreateMeeting}
         etapas={etapasDoPipeline}
       />
-
-    
     </div>
   );
 }
