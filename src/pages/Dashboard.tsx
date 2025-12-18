@@ -65,7 +65,7 @@ export default function Dashboard() {
   const navigate = useNavigate();
   return (
     <AppLayout>
-      <div className="pt-8 animate-fade-in">
+      <div className="pt-8 px-8  animate-fade-in">
         {/* Header */}
         <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between mb-8">
           <div className="space-y-1">

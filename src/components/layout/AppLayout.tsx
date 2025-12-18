@@ -64,7 +64,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       >
       
 
-        <main className="flex-1 w-full px-4 pb-4 sm:px-6 lg:px-8">
+        <main className="flex-1 w-full px-4 pb-4 lg:px-0">
           {children}
         </main>
       </div>
