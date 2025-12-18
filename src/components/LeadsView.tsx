@@ -242,7 +242,7 @@ export default function LeadsView({ pipelines, etapas }: LeadsViewProps) {
           <div className="flex w-full gap-1">
             <Button
               className="w-full"
-              variant={visualizacao === "kanban" ? "default" : "outline"}
+              variant={visualizacao === "kanban" ? "default" : "inactive"}
               size="icon"
               onClick={() => setVisualizacao("kanban")}
             >
@@ -250,7 +250,7 @@ export default function LeadsView({ pipelines, etapas }: LeadsViewProps) {
             </Button>
             <Button
               className="w-full"
-              variant={visualizacao === "lista" ? "default" : "outline"}
+              variant={visualizacao === "lista" ? "default" : "inactive"}
               size="icon"
               onClick={() => setVisualizacao("lista")}
             >
