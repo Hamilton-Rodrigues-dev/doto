@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logoSvg from "@/assets/logo.svg";
+import logoSvg from "@/assets/Logo-Light.svg"
 import sidebarToggleIcon from "@/assets/sidebar-toggle.svg";
 import {
   Tooltip,
@@ -107,7 +107,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
 
       <aside
         className={cn(
-          "fixed left-0 top-0 h-screen bg-card border-r border-border flex flex-col z-50",
+          "fixed left-0 top-0 h-screen bg-primary border-r border-border flex flex-col z-50",
           "transition-all duration-300 ease-in-out transform",
           collapsed ? "w-[72px]" : "w-[272px]",
           isMobile && !open && "-translate-x-full pointer-events-none",
@@ -119,7 +119,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
         {/* Logo + Toggle */}
         <div
           className={cn(
-            "border-b border-muted flex bg-card",
+            "border-b border-muted flex bg-primary",
             collapsed
               ? "flex-col items-center py-4 px-2 gap-4"
               : "flex-row items-center justify-between h-[119px] px-6"
@@ -135,7 +135,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
             <img src={logoSvg} alt="Logo Dôto" className="w-[40px] h-[40px]" />
             {!collapsed && (
               <div>
-                <p className="font-bold text-lg text-primary">Dôto</p>
+                <p className="font-bold text-lg text-accent-foreground">Dôto</p>
               </div>
             )}
           </div>
@@ -156,12 +156,12 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
             }
           >
             {isMobile ? (
-              <X className="w-6 h-6 text-foreground" />
+              <X className="w-6 h-6 text-white" />
             ) : (
               <img
                 src={sidebarToggleIcon}
                 alt="Toggle sidebar"
-                className={cn("w-6 h-6", collapsed && "rotate-180")}
+                className={cn("w-7 h-7", collapsed && "rotate-180")}
               />
             )}
           </button>
@@ -169,11 +169,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
 
         {/* Menu */}
         <nav className="flex-1 py-6 px-3 overflow-y-auto">
-          {!collapsed && (
-            <p className="text-xs font-semibold text-primary uppercase tracking-wider px-3 mb-4">
-              Menu Principal
-            </p>
-          )}
+   
           <TooltipProvider delayDuration={0}>
             <Accordion
             value={openGroups}
@@ -188,7 +184,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
                   className="border-none"
                 >
                   {!collapsed && (
-                    <AccordionTrigger className="px-3 py-2 text-xs font-semibold text-muted-foreground uppercase tracking-wide hover:no-underline">
+                    <AccordionTrigger className="px-3 py-2 text-xs font-semibold text-white uppercase tracking-wide hover:no-underline">
                       {group.title}
                     </AccordionTrigger>
                   )}
@@ -205,7 +201,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
                             "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
                             isActive
                               ? "bg-[#dbeafe] text-[#0b68f7]"
-                              : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                              : "text-slate-50 hover:bg-muted hover:text-foreground",
                             collapsed && "justify-center px-2"
                           )}
                           onClick={handleNavClick}
@@ -249,8 +245,8 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center justify-center">
-                    <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                      <span className="text-primary font-semibold text-sm">
+                    <div className="w-10 h-10 rounded-full bg-text-accent-foreground/20 flex items-center justify-center flex-shrink-0">
+                      <span className="text-accent-foreground font-semibold text-sm">
                         DR
                       </span>
                     </div>
@@ -265,24 +261,24 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
               </Tooltip>
             ) : (
               <div className="flex items-center gap-3 px-3 py-2">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
-                  <span className="text-primary font-semibold text-sm">DR</span>
+                <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                  <span className="text-accent-foreground font-semibold text-sm">DR</span>
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-primary truncate">
+                  <p className="text-sm font-medium text-accent-foreground truncate">
                     Dôto
                   </p>
-                  <p className="text-xs text-muted-foreground truncate">
+                  <p className="text-xs text-white truncate">
                     email@doto.com
                   </p>
                 </div>
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   size="icon"
                   onClick={handleLogout}
                   title="Sair"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-6 h-6  hover:opacity-80" />
                 </Button>
               </div>
             )}
