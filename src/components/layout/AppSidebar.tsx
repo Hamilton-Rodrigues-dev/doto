@@ -13,7 +13,7 @@ import {
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import logoSvg from "@/assets/Logo-Light.svg"
+import logoSvg from "@/assets/Logo-Light.svg";
 import sidebarToggleIcon from "@/assets/sidebar-toggle.svg";
 import {
   Tooltip,
@@ -29,7 +29,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useEffect, useState } from "react";
-
 
 const menuGroups = [
   {
@@ -71,7 +70,9 @@ export function AppSidebar({
   onNavigate,
 }: AppSidebarProps) {
   const location = useLocation();
-const [openGroups, setOpenGroups] = useState<string[]>([]);
+  const [openGroups, setOpenGroups] = useState<string[]>(() =>
+    menuGroups.map((group) => group.title)
+  );
 
   const handleLogout = () => {
     window.location.href = "/";
@@ -82,17 +83,6 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
       onNavigate();
     }
   };
-  useEffect(() => {
-  const activeGroup = menuGroups.find((group) =>
-    group.items.some((item) =>
-      location.pathname.startsWith(item.path)
-    )
-  );
-
-  if (activeGroup) {
-    setOpenGroups([activeGroup.title]);
-  }
-}, [location.pathname]);
 
   return (
     <>
@@ -132,10 +122,16 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
               collapsed ? "justify-end items-end gap-0 px-2" : "gap-3"
             )}
           >
-            <img src={logoSvg} alt="Logo Dotô IA" className="w-[40px] h-[40px]" />
+            <img
+              src={logoSvg}
+              alt="Logo Dotô IA"
+              className="w-[40px] h-[40px]"
+            />
             {!collapsed && (
               <div>
-                <p className="font-bold text-lg text-accent-foreground">Dotô IA</p>
+                <p className="font-bold text-lg text-accent-foreground">
+                  Dotô IA
+                </p>
               </div>
             )}
           </div>
@@ -168,13 +164,12 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
         </div>
 
         {/* Menu */}
-        <nav className="flex-1 py-6 px-3 overflow-y-auto">
-   
+        <nav className="flex-1 py-6 px-3 overflow-y-auto sidebar-scroll">
           <TooltipProvider delayDuration={0}>
             <Accordion
-            value={openGroups}
-  onValueChange={setOpenGroups}
               type="multiple"
+              value={openGroups}
+              onValueChange={setOpenGroups}
               className="space-y-2"
             >
               {menuGroups.map((group) => (
@@ -262,15 +257,15 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
             ) : (
               <div className="flex items-center gap-3 px-3 py-2">
                 <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-                  <span className="text-accent-foreground font-semibold text-sm">DR</span>
+                  <span className="text-accent-foreground font-semibold text-sm">
+                    DR
+                  </span>
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-accent-foreground truncate">
                     Dotô IA
                   </p>
-                  <p className="text-xs text-white truncate">
-                    email@doto.com
-                  </p>
+                  <p className="text-xs text-white truncate">email@doto.com</p>
                 </div>
                 <Button
                   variant="secondary"
@@ -278,7 +273,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
                   onClick={handleLogout}
                   title="Sair"
                 >
-                  <LogOut className="w-6 h-6  hover:opacity-80" />
+                  <LogOut className="w-6 h-6  hover:opacity-50" />
                 </Button>
               </div>
             )}
