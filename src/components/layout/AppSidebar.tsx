@@ -132,10 +132,10 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
               collapsed ? "justify-end items-end gap-0 px-2" : "gap-3"
             )}
           >
-            <img src={logoSvg} alt="Logo Dôto" className="w-[40px] h-[40px]" />
+            <img src={logoSvg} alt="Logo Dotô IA" className="w-[40px] h-[40px]" />
             {!collapsed && (
               <div>
-                <p className="font-bold text-lg text-accent-foreground">Dôto</p>
+                <p className="font-bold text-lg text-accent-foreground">Dotô IA</p>
               </div>
             )}
           </div>
@@ -253,7 +253,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
                   </div>
                 </TooltipTrigger>
                 <TooltipContent side="right" sideOffset={10}>
-                  <p className="font-medium">Dôto</p>
+                  <p className="font-medium">Dotô IA</p>
                   <p className="text-xs text-muted-foreground">
                     email@medms.com
                   </p>
@@ -266,7 +266,7 @@ const [openGroups, setOpenGroups] = useState<string[]>([]);
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-accent-foreground truncate">
-                    Dôto
+                    Dotô IA
                   </p>
                   <p className="text-xs text-white truncate">
                     email@doto.com
