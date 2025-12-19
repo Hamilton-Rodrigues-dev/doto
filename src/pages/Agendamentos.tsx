@@ -377,14 +377,17 @@ export default function Agendamentos() {
         breadcrumb="Calendário"
         searchPlaceholder="Buscar evento ou compromisso"
         actions={
-          <Button className="gap-2 w-full lg:w-auto" onClick={() => openModal()}>
+          <Button
+            className="gap-2 w-full lg:w-auto"
+            onClick={() => openModal()}
+          >
             <Plus className="w-4 h-4" />
             Novo Agendamento
           </Button>
         }
       />
 
-      <div className="pt-8">
+      <div className="pt-8 px-8 ">
         <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
           <div className="flex flex-col space-y-2 lg:flex-row items-center justify-between p-6 border-b border-border">
             <h2 className="text-xl font-bold text-foreground">
@@ -395,18 +398,35 @@ export default function Agendamentos() {
                     month: "long",
                     year: "numeric",
                   })
-                : `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`}
+                : `${
+                    monthNames[currentDate.getMonth()]
+                  } ${currentDate.getFullYear()}`}
             </h2>
 
             <div className="flex flex-col gap-3 md:flex-row md:items-center">
               <div className="flex items-center border border-border rounded-lg w-full md:w-auto">
-                <Button variant="ghost" size="icon" className="flex-1 md:flex-initial" onClick={handlePrevPeriod}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex-1 md:flex-initial"
+                  onClick={handlePrevPeriod}
+                >
                   <ChevronLeft className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm" className="flex-1 md:flex-initial" onClick={handleToday}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="flex-1 md:flex-initial"
+                  onClick={handleToday}
+                >
                   Hoje
                 </Button>
-                <Button variant="ghost" size="icon" className="flex-1 md:flex-initial" onClick={handleNextPeriod}>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="flex-1 md:flex-initial"
+                  onClick={handleNextPeriod}
+                >
                   <ChevronRight className="w-4 h-4" />
                 </Button>
               </div>
@@ -452,62 +472,60 @@ export default function Agendamentos() {
                         {dia.slice(0, 3)}
                       </span>
                       {/* telas maiores (lg+): Segunda */}
-                      <span className="hidden lg:inline">
-                        {dia}
-                      </span>
+                      <span className="hidden lg:inline">{dia}</span>
                     </div>
                   ))}
                 </div>
 
-                  <div className="grid grid-cols-7 border-l border-t border-border">
-                    {days.map((day, index) => {
-                      const dayEventos = getEventosForDay(day.date);
-                      return (
-                        <div
-                          key={index}
-                          onClick={() => openModal(day.date)}
+                <div className="grid grid-cols-7 border-l border-t border-border">
+                  {days.map((day, index) => {
+                    const dayEventos = getEventosForDay(day.date);
+                    return (
+                      <div
+                        key={index}
+                        onClick={() => openModal(day.date)}
+                        className={cn(
+                          "min-h-[100px] p-2 border-r border-b border-border transition-colors cursor-pointer",
+                          !day.isCurrentMonth && "bg-muted/30",
+                          day.isCurrentMonth && "bg-card hover:bg-muted/50"
+                        )}
+                      >
+                        <span
                           className={cn(
-                            "min-h-[100px] p-2 border-r border-b border-border transition-colors cursor-pointer",
-                            !day.isCurrentMonth && "bg-muted/30",
-                            day.isCurrentMonth && "bg-card hover:bg-muted/50"
+                            "text-sm font-medium",
+                            day.isCurrentMonth
+                              ? "text-foreground"
+                              : "text-muted-foreground"
                           )}
                         >
-                          <span
-                            className={cn(
-                              "text-sm font-medium",
-                              day.isCurrentMonth
-                                ? "text-foreground"
-                                : "text-muted-foreground"
-                            )}
-                          >
-                            {day.day}
-                          </span>
+                          {day.day}
+                        </span>
 
-                          <div className="mt-1 space-y-1">
-                            {dayEventos.slice(0, 2).map((evento) => (
-                              <div
-                                key={evento.id}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  editExistingEvent(evento);
-                                }}
-                                className="text-xs px-2 py-1 rounded text-white truncate"
-                                style={{ backgroundColor: evento.cor }}
-                              >
-                                {evento.horarioInicio} - {evento.titulo}
-                              </div>
-                            ))}
+                        <div className="mt-1 space-y-1">
+                          {dayEventos.slice(0, 2).map((evento) => (
+                            <div
+                              key={evento.id}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                editExistingEvent(evento);
+                              }}
+                              className="text-xs px-2 py-1 rounded text-white truncate"
+                              style={{ backgroundColor: evento.cor }}
+                            >
+                              {evento.horarioInicio} - {evento.titulo}
+                            </div>
+                          ))}
 
-                            {dayEventos.length > 2 && (
-                              <div className="text-xs text-muted-foreground px-2">
-                                +{dayEventos.length - 2} mais
-                              </div>
-                            )}
-                          </div>
+                          {dayEventos.length > 2 && (
+                            <div className="text-xs text-muted-foreground px-2">
+                              +{dayEventos.length - 2} mais
+                            </div>
+                          )}
                         </div>
-                      );
-                    })}
-                  </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </>
             )}
 
@@ -556,7 +574,7 @@ export default function Agendamentos() {
             )}
 
             {viewMode === "Dia" && (
-              <div >
+              <div>
                 {horariosDisponiveis.map((horario, index) => {
                   const eventoNoHorario = eventos.find(
                     (e) =>
@@ -611,16 +629,6 @@ export default function Agendamentos() {
             <DialogTitle className="text-primary">
               {isPessoal ? "Novo compromisso" : "Novo agendamento"}
             </DialogTitle>
-            {editingId && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive"
-                onClick={() => setShowDeleteConfirm(true)}
-              >
-                <Trash2 className="w-4 h-4" />
-              </Button>
-            )}
           </div>
 
           <div className="space-y-4 py-4">
@@ -680,9 +688,7 @@ export default function Agendamentos() {
                 <Input
                   type="time"
                   value={formData.horarioFim}
-                  onChange={(e) =>
-                    updateFormData("horarioFim", e.target.value)
-                  }
+                  onChange={(e) => updateFormData("horarioFim", e.target.value)}
                   className="border-0 border-b border-border rounded-none focus-visible:ring-0 px-0"
                 />
               </div>
@@ -726,9 +732,7 @@ export default function Agendamentos() {
                     <Label>Valor a receber</Label>
                     <Input
                       value={formData.valor}
-                      onChange={(e) =>
-                        updateFormData("valor", e.target.value)
-                      }
+                      onChange={(e) => updateFormData("valor", e.target.value)}
                       className="border-0 border-b border-border rounded-none focus-visible:ring-0 px-0"
                     />
                   </div>
@@ -749,9 +753,7 @@ export default function Agendamentos() {
                   <Label className="text-primary">Anotações (opcional)</Label>
                   <Textarea
                     value={formData.anotacao}
-                    onChange={(e) =>
-                      updateFormData("anotacao", e.target.value)
-                    }
+                    onChange={(e) => updateFormData("anotacao", e.target.value)}
                     placeholder="Descrição da anotação"
                     className="border-0 border-b border-border rounded-none focus-visible:ring-0 px-0 resize-none"
                     rows={2}
@@ -762,9 +764,7 @@ export default function Agendamentos() {
                   <Label className="text-primary">Tarefas (opcional)</Label>
                   <Input
                     value={formData.tarefa}
-                    onChange={(e) =>
-                      updateFormData("tarefa", e.target.value)
-                    }
+                    onChange={(e) => updateFormData("tarefa", e.target.value)}
                     placeholder="Descrição da tarefa"
                     className="border-0 border-b border-border rounded-none focus-visible:ring-0 px-0"
                   />
@@ -773,11 +773,23 @@ export default function Agendamentos() {
             )}
           </div>
 
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCloseModal}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave}>Salvar</Button>
+          <DialogFooter className="flex !justify-between w-full">
+            {editingId && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-destructive"
+                onClick={() => setShowDeleteConfirm(true)}
+              >
+                <Trash2 className="w-4 h-4" />
+              </Button>
+            )}
+            <div className="flex gap-4">
+              <Button variant="outline" onClick={handleCloseModal}>
+                Cancelar
+              </Button>
+              <Button onClick={handleSave}>Salvar</Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>
@@ -807,4 +819,3 @@ export default function Agendamentos() {
     </AppLayout>
   );
 }
-

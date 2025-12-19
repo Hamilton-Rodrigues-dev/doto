@@ -4,6 +4,7 @@ import { AgentCard } from "@/components/agentes/AgentCard";
 import { Button } from "@/components/ui/button";
 import { Plus, Bot } from "lucide-react";
 import { useAgentes } from "@/contexts/AgentesContext";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export default function Agentes() {
   const navigate = useNavigate();
@@ -19,24 +20,28 @@ export default function Agentes() {
 
   return (
     <AppLayout>
+      
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">Agentes</h1>
-            <p className="text-muted-foreground mt-1">
-              Crie, treine e gerencie seus agentes de IA
-            </p>
-          </div>
-          <Button onClick={handleCreateAgent} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Criar agente
-          </Button>
-        </div>
+       <PageHeader
+  title="Agentes"
+  breadcrumb="Agentes"
+  actions={
+    <Button onClick={handleCreateAgent} className="gap-2 w-full sm:w-auto">
+      <Plus className="w-4 h-4" />
+      Criar agente
+    </Button>
+  }
+/>
+
+<p className="text-muted-foreground mt-1 px-8 ">
+  Crie, treine e gerencie seus agentes de IA
+</p>
+
 
         {/* Content */}
         {agentes.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-16 px-4">
+          <div className="flex flex-col items-center justify-center py-16 px-8 ">
             <div className="w-24 h-24 rounded-full bg-blue-100 flex items-center justify-center mb-6">
               <Bot className="w-12 h-12 text-blue-600" strokeWidth={1.5} />
             </div>
@@ -52,7 +57,7 @@ export default function Agentes() {
             </Button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-8 ">
             {agentes.map((agent) => (
               <AgentCard
                 key={agent.id}

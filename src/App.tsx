@@ -20,6 +20,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import { ProtectedRoute } from "./components/ProtectedRoute";
 import { AuthProvider } from "./contexts/AuthContext";
+import Leads from "./pages/Leads";
 
 const queryClient = new QueryClient();
 
@@ -37,12 +38,13 @@ const App = () => (
               <Route path="/login" element={<Login />} />
 
               <Route path="/dashboard" element={<ProtectedRoute allowedTypes={["admin"]}><Dashboard /></ProtectedRoute>} />
-              <Route path="/pacientes" element={<ProtectedRoute allowedTypes={["admin"]}><Pacientes /></ProtectedRoute> } />
+              <Route path="/leads" element={<ProtectedRoute allowedTypes={["admin"]}><Leads /></ProtectedRoute>} />
+              <Route path="/agendamentos" element={<ProtectedRoute allowedTypes={["admin"]}><Agendamentos /></ProtectedRoute>} />
               <Route path="/consultas" element={<ProtectedRoute allowedTypes={["admin"]}><Consultas /></ProtectedRoute>} />
               <Route path="/consultas/iniciada/:id" element={<ProtectedRoute allowedTypes={["admin"]}><ConsultaIniciada /></ProtectedRoute>} />
-              <Route path="/agendamentos" element={<ProtectedRoute allowedTypes={["admin"]}><Agendamentos /></ProtectedRoute>} />
-              <Route path="/tarefas" element={<ProtectedRoute allowedTypes={["admin"]}><Tarefas /></ProtectedRoute>} />
+              <Route path="/pacientes" element={<ProtectedRoute allowedTypes={["admin"]}><Pacientes /></ProtectedRoute> } />
               <Route path="/financeiro" element={<ProtectedRoute allowedTypes={["admin"]}><Financeiro /></ProtectedRoute>} />
+              <Route path="/tarefas" element={<ProtectedRoute allowedTypes={["admin"]}><Tarefas /></ProtectedRoute>} />
               <Route path="/dashboard/agentes" element={<ProtectedRoute allowedTypes={["admin"]}><Agentes /></ProtectedRoute>} />
               <Route path="/dashboard/agentes/novo" element={<ProtectedRoute allowedTypes={["admin"]}><NovoAgente /></ProtectedRoute>} />
               <Route path="/dashboard/agentes/:id" element={<ProtectedRoute allowedTypes={["admin"]}><AgenteDetalhes /></ProtectedRoute>} />

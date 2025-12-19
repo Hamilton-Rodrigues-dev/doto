@@ -25,13 +25,45 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PROTOCOLOS } from "@/constants";
-import type { Paciente, PacienteFormData, FiltroPacientes } from "@/types/paciente";
+import type {
+  Paciente,
+  PacienteFormData,
+  FiltroPacientes,
+} from "@/types/paciente";
 
 const pacientesData: Paciente[] = [
-  { id: 1, nome: "Ana Souza", email: "ana.souza22@gmail.com", telefone: "(11) 91234-5678", ultimaConsulta: "22/10/25", pendencia: true },
-  { id: 2, nome: "Joao Martins", email: "joao.martins89@hotmail.com", telefone: "(11) 99876-5432", ultimaConsulta: "21/10/25", pendencia: false },
-  { id: 3, nome: "Camila Borges", email: "camila.borges@outlook.com", telefone: "(11) 98765-4321", ultimaConsulta: "16/10/25", pendencia: false },
-  { id: 4, nome: "Lucas Fernandes", email: "lucas.fernandes.dev@gmail.com", telefone: "(11) 99654-3210", ultimaConsulta: "14/10/25", pendencia: false },
+  {
+    id: 1,
+    nome: "Ana Souza",
+    email: "ana.souza22@gmail.com",
+    telefone: "(11) 91234-5678",
+    ultimaConsulta: "22/10/25",
+    pendencia: true,
+  },
+  {
+    id: 2,
+    nome: "Joao Martins",
+    email: "joao.martins89@hotmail.com",
+    telefone: "(11) 99876-5432",
+    ultimaConsulta: "21/10/25",
+    pendencia: false,
+  },
+  {
+    id: 3,
+    nome: "Camila Borges",
+    email: "camila.borges@outlook.com",
+    telefone: "(11) 98765-4321",
+    ultimaConsulta: "16/10/25",
+    pendencia: false,
+  },
+  {
+    id: 4,
+    nome: "Lucas Fernandes",
+    email: "lucas.fernandes.dev@gmail.com",
+    telefone: "(11) 99654-3210",
+    ultimaConsulta: "14/10/25",
+    pendencia: false,
+  },
 ];
 
 const initialFiltros: FiltroPacientes = {
@@ -89,13 +121,20 @@ export default function Pacientes() {
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [filtros, setFiltros] = useState(initialFiltros);
   const [filtrosAtivos, setFiltrosAtivos] = useState(initialFiltros);
-  const [selectedPaciente, setSelectedPaciente] = useState<Paciente | null>(null);
-  const [draftPaciente, setDraftPaciente] = useState<PacienteDraft | null>(null);
-  const [editingSections, setEditingSections] = useState<Record<SectionKey, boolean>>({
+  const [selectedPaciente, setSelectedPaciente] = useState<Paciente | null>(
+    null
+  );
+  const [draftPaciente, setDraftPaciente] = useState<PacienteDraft | null>(
+    null
+  );
+  const [editingSections, setEditingSections] = useState<
+    Record<SectionKey, boolean>
+  >({
     dados: false,
     observacoes: false,
   });
-  const [pendingCancelSection, setPendingCancelSection] = useState<SectionKey | null>(null);
+  const [pendingCancelSection, setPendingCancelSection] =
+    useState<SectionKey | null>(null);
   const [showExitConfirm, setShowExitConfirm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
@@ -181,17 +220,24 @@ export default function Pacientes() {
           endereco: draftPaciente.endereco,
           observacoes: draftPaciente.observacoes,
         };
-        setPacientes((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        setPacientes((prev) =>
+          prev.map((p) => (p.id === updated.id ? updated : p))
+        );
         setSelectedPaciente(updated);
         setDraftPaciente(mapPacienteToDraft(updated));
-        toast({ title: "Sucesso", description: "Dados do paciente atualizados." });
+        toast({
+          title: "Sucesso",
+          description: "Dados do paciente atualizados.",
+        });
       } else {
         const newPaciente: Paciente = {
           id: pacientes.length + 1,
           nome: draftPaciente.nome,
           email: draftPaciente.email,
           telefone: draftPaciente.telefone,
-          ultimaConsulta: draftPaciente.ultimaConsulta || new Date().toLocaleDateString("pt-BR"),
+          ultimaConsulta:
+            draftPaciente.ultimaConsulta ||
+            new Date().toLocaleDateString("pt-BR"),
           pendencia: draftPaciente.pendencia ?? false,
           cpf: draftPaciente.cpf,
           dataNascimento: draftPaciente.dataNascimento,
@@ -211,7 +257,8 @@ export default function Pacientes() {
       if (!selectedPaciente) {
         toast({
           title: "Erro",
-          description: "Salve os dados do paciente antes de adicionar observacoes.",
+          description:
+            "Salve os dados do paciente antes de adicionar observacoes.",
           variant: "destructive",
         });
         return;
@@ -220,7 +267,9 @@ export default function Pacientes() {
         ...selectedPaciente,
         observacoes: draftPaciente.observacoes,
       };
-      setPacientes((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      setPacientes((prev) =>
+        prev.map((p) => (p.id === updated.id ? updated : p))
+      );
       setSelectedPaciente(updated);
       setDraftPaciente(mapPacienteToDraft(updated));
       setEditingSections((prev) => ({ ...prev, observacoes: false }));
@@ -269,17 +318,22 @@ export default function Pacientes() {
         searchPlaceholder="Buscar pacientes"
         onSearch={setSearchTerm}
         actions={
-          <Button className="gap-2 w-full lg:w-auto" onClick={() => handleOpenProntuario()}>
+          <Button
+            className="gap-2 w-full lg:w-auto"
+            onClick={() => handleOpenProntuario()}
+          >
             <Plus className="w-4 h-4" />
             Novo paciente
           </Button>
         }
       />
 
-      <div className="pt-8">
+      <div className="pt-8 px-8 ">
         <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
           <div className="flex items-center justify-between p-4  border-border">
-            <h2 className="text-lg font-semibold text-foreground">Listagem de pacientes</h2>
+            <h2 className="text-lg font-semibold text-foreground">
+              Listagem de pacientes
+            </h2>
             <Button
               variant="outline"
               size="sm"
@@ -291,25 +345,26 @@ export default function Pacientes() {
             </Button>
           </div>
 
-          <DataTable data={filteredPacientes} columns={columns} onRowClick={handleOpenProntuario} />
+          <DataTable
+            data={filteredPacientes}
+            columns={columns}
+            onRowClick={handleOpenProntuario}
+          />
         </div>
       </div>
 
       {/* Modal Prontuario */}
-      <Dialog open={isProntuarioOpen} onOpenChange={(open) => (open ? setIsProntuarioOpen(true) : handleCloseProntuario())}>
+      <Dialog
+        open={isProntuarioOpen}
+        onOpenChange={(open) =>
+          open ? setIsProntuarioOpen(true) : handleCloseProntuario()
+        }
+      >
         <DialogContent className="sm:max-w-4xl">
           <DialogHeader className="flex flex-row items-center justify-between">
-            <DialogTitle className="text-primary">Prontuario do Paciente</DialogTitle>
-            {selectedPaciente && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                onClick={() => setShowDeleteConfirm(true)}
-              >
-                <Trash2 className="w-5 h-5" />
-              </Button>
-            )}
+            <DialogTitle className="text-primary mb-4">
+              Prontuario do Paciente
+            </DialogTitle>
           </DialogHeader>
 
           {draftPaciente ? (
@@ -317,11 +372,19 @@ export default function Pacientes() {
               <div className="bg-muted/20 rounded-xl border border-border p-4 space-y-3">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-sm font-semibold text-primary">Dados do Paciente</h3>
-                    <p className="text-xs text-muted-foreground">Nome e telefone sao obrigatorios</p>
+                    <h3 className="text-sm font-semibold text-primary">
+                      Dados do Paciente
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      Nome e telefone sao obrigatorios
+                    </p>
                   </div>
                   {!editingSections.dados && (
-                    <Button variant="outline" size="sm" onClick={() => handleToggleEdit("dados", true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleToggleEdit("dados", true)}
+                    >
                       Editar
                     </Button>
                   )}
@@ -334,7 +397,12 @@ export default function Pacientes() {
                         <Label>Nome *</Label>
                         <Input
                           value={draftPaciente.nome}
-                          onChange={(e) => setDraftPaciente({ ...draftPaciente, nome: e.target.value })}
+                          onChange={(e) =>
+                            setDraftPaciente({
+                              ...draftPaciente,
+                              nome: e.target.value,
+                            })
+                          }
                           placeholder="Nome do paciente"
                         />
                       </div>
@@ -342,7 +410,12 @@ export default function Pacientes() {
                         <Label>Telefone *</Label>
                         <Input
                           value={draftPaciente.telefone}
-                          onChange={(e) => setDraftPaciente({ ...draftPaciente, telefone: e.target.value })}
+                          onChange={(e) =>
+                            setDraftPaciente({
+                              ...draftPaciente,
+                              telefone: e.target.value,
+                            })
+                          }
                           placeholder="(00) 00000-0000"
                         />
                       </div>
@@ -350,7 +423,12 @@ export default function Pacientes() {
                         <Label>E-mail</Label>
                         <Input
                           value={draftPaciente.email}
-                          onChange={(e) => setDraftPaciente({ ...draftPaciente, email: e.target.value })}
+                          onChange={(e) =>
+                            setDraftPaciente({
+                              ...draftPaciente,
+                              email: e.target.value,
+                            })
+                          }
                           placeholder="email@exemplo.com"
                         />
                       </div>
@@ -359,7 +437,12 @@ export default function Pacientes() {
                           <Label>CPF</Label>
                           <Input
                             value={draftPaciente.cpf}
-                            onChange={(e) => setDraftPaciente({ ...draftPaciente, cpf: e.target.value })}
+                            onChange={(e) =>
+                              setDraftPaciente({
+                                ...draftPaciente,
+                                cpf: e.target.value,
+                              })
+                            }
                             placeholder="000.000.000-00"
                           />
                         </div>
@@ -368,7 +451,12 @@ export default function Pacientes() {
                           <Input
                             type="date"
                             value={draftPaciente.dataNascimento}
-                            onChange={(e) => setDraftPaciente({ ...draftPaciente, dataNascimento: e.target.value })}
+                            onChange={(e) =>
+                              setDraftPaciente({
+                                ...draftPaciente,
+                                dataNascimento: e.target.value,
+                              })
+                            }
                           />
                         </div>
                       </div>
@@ -376,7 +464,12 @@ export default function Pacientes() {
                         <Label>Endereco</Label>
                         <Input
                           value={draftPaciente.endereco}
-                          onChange={(e) => setDraftPaciente({ ...draftPaciente, endereco: e.target.value })}
+                          onChange={(e) =>
+                            setDraftPaciente({
+                              ...draftPaciente,
+                              endereco: e.target.value,
+                            })
+                          }
                           placeholder="Rua, numero, cidade"
                         />
                       </div>
@@ -384,54 +477,90 @@ export default function Pacientes() {
                   ) : (
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <p>
-                        <span className="font-semibold text-foreground">Nome:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          Nome:
+                        </span>{" "}
                         {draftPaciente.nome || "--"}
                       </p>
                       <p>
-                        <span className="font-semibold text-foreground">Telefone:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          Telefone:
+                        </span>{" "}
                         {draftPaciente.telefone || "--"}
                       </p>
                       <p>
-                        <span className="font-semibold text-foreground">E-mail:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          E-mail:
+                        </span>{" "}
                         {draftPaciente.email || "--"}
                       </p>
                       <p>
-                        <span className="font-semibold text-foreground">CPF:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          CPF:
+                        </span>{" "}
                         {draftPaciente.cpf || "--"}
                       </p>
                       <p>
-                        <span className="font-semibold text-foreground">Data de nascimento:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          Data de nascimento:
+                        </span>{" "}
                         {draftPaciente.dataNascimento || "--"}
                       </p>
                       <p>
-                        <span className="font-semibold text-foreground">Endereco:</span>{" "}
+                        <span className="font-semibold text-foreground">
+                          Endereco:
+                        </span>{" "}
                         {draftPaciente.endereco || "--"}
                       </p>
                       {draftPaciente.ultimaConsulta && (
                         <p>
-                          <span className="font-semibold text-foreground">Ultima consulta:</span>{" "}
+                          <span className="font-semibold text-foreground">
+                            Ultima consulta:
+                          </span>{" "}
                           {draftPaciente.ultimaConsulta}
                         </p>
                       )}
                     </div>
                   )}
                 </div>
-
+              <DialogFooter className="flex items-center !justify-between">
+                  {selectedPaciente && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={() => setShowDeleteConfirm(true)}
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
+                )}
                 {editingSections.dados && (
                   <div className="flex justify-end gap-2 pt-2">
-                    <Button variant="outline" onClick={() => handleCancelSection("dados")}>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleCancelSection("dados")}
+                    >
                       Cancelar
                     </Button>
-                    <Button onClick={() => handleSaveSection("dados")}>Salvar alteracoes</Button>
+                    <Button onClick={() => handleSaveSection("dados")}>
+                      Salvar alteracoes
+                    </Button>
                   </div>
                 )}
+              </DialogFooter>
               </div>
 
               <div className="bg-muted/20 rounded-xl border border-border p-4 space-y-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-primary">Observacoes / Historico</h3>
+                  <h3 className="text-sm font-semibold text-primary">
+                    Observacoes / Historico
+                  </h3>
                   {!editingSections.observacoes && (
-                    <Button variant="outline" size="sm" onClick={() => handleToggleEdit("observacoes", true)}>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleToggleEdit("observacoes", true)}
+                    >
                       Editar
                     </Button>
                   )}
@@ -440,28 +569,42 @@ export default function Pacientes() {
                 {editingSections.observacoes ? (
                   <Textarea
                     value={draftPaciente.observacoes}
-                    onChange={(e) => setDraftPaciente({ ...draftPaciente, observacoes: e.target.value })}
+                    onChange={(e) =>
+                      setDraftPaciente({
+                        ...draftPaciente,
+                        observacoes: e.target.value,
+                      })
+                    }
                     rows={10}
                     placeholder="Adicione observacoes importantes ou historico do paciente..."
                   />
                 ) : (
                   <div className="min-h-[200px] border border-dashed border-border rounded-lg p-3 bg-card text-sm text-muted-foreground">
-                    {draftPaciente.observacoes ? draftPaciente.observacoes : "Nenhuma observacao adicionada."}
+                    {draftPaciente.observacoes
+                      ? draftPaciente.observacoes
+                      : "Nenhuma observacao adicionada."}
                   </div>
                 )}
 
                 {editingSections.observacoes && (
                   <div className="flex justify-end gap-2 pt-2">
-                    <Button variant="outline" onClick={() => handleCancelSection("observacoes")}>
+                    <Button
+                      variant="outline"
+                      onClick={() => handleCancelSection("observacoes")}
+                    >
                       Cancelar
                     </Button>
-                    <Button onClick={() => handleSaveSection("observacoes")}>Salvar alteracoes</Button>
+                    <Button onClick={() => handleSaveSection("observacoes")}>
+                      Salvar alteracoes
+                    </Button>
                   </div>
                 )}
               </div>
             </div>
           ) : (
-            <div className="py-8 text-center text-muted-foreground">Nenhum paciente selecionado</div>
+            <div className="py-8 text-center text-muted-foreground">
+              Nenhum paciente selecionado
+            </div>
           )}
         </DialogContent>
       </Dialog>
@@ -470,20 +613,29 @@ export default function Pacientes() {
       <Dialog open={isFilterModalOpen} onOpenChange={setIsFilterModalOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-primary">Filtrar Pacientes</DialogTitle>
+            <DialogTitle className="text-primary">
+              Filtrar Pacientes
+            </DialogTitle>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Protocolo</Label>
-              <Select value={filtros.protocolo} onValueChange={(v) => setFiltros({ ...filtros, protocolo: v })}>
+              <Select
+                value={filtros.protocolo}
+                onValueChange={(v) => setFiltros({ ...filtros, protocolo: v })}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="Escolha o protocolo" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
                   {PROTOCOLOS.map((protocolo) => (
-                    <SelectItem className="cursor-pointer" key={protocolo} value={protocolo}>
+                    <SelectItem
+                      className="cursor-pointer"
+                      key={protocolo}
+                      value={protocolo}
+                    >
                       {protocolo}
                     </SelectItem>
                   ))}
@@ -495,7 +647,9 @@ export default function Pacientes() {
               <Label className="font-medium">Somente com pendencia</Label>
               <Switch
                 checked={filtros.somentePendencia}
-                onCheckedChange={(v) => setFiltros({ ...filtros, somentePendencia: v })}
+                onCheckedChange={(v) =>
+                  setFiltros({ ...filtros, somentePendencia: v })
+                }
               />
             </div>
 
@@ -503,7 +657,9 @@ export default function Pacientes() {
               <Label className="font-medium">Primeira consulta</Label>
               <Switch
                 checked={filtros.primeiraConsulta}
-                onCheckedChange={(v) => setFiltros({ ...filtros, primeiraConsulta: v })}
+                onCheckedChange={(v) =>
+                  setFiltros({ ...filtros, primeiraConsulta: v })
+                }
               />
             </div>
 
@@ -513,7 +669,9 @@ export default function Pacientes() {
                 <Input
                   type="date"
                   value={filtros.dataInicial}
-                  onChange={(e) => setFiltros({ ...filtros, dataInicial: e.target.value })}
+                  onChange={(e) =>
+                    setFiltros({ ...filtros, dataInicial: e.target.value })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -521,7 +679,9 @@ export default function Pacientes() {
                 <Input
                   type="date"
                   value={filtros.dataFinal}
-                  onChange={(e) => setFiltros({ ...filtros, dataFinal: e.target.value })}
+                  onChange={(e) =>
+                    setFiltros({ ...filtros, dataFinal: e.target.value })
+                  }
                 />
               </div>
             </div>
@@ -563,7 +723,9 @@ export default function Pacientes() {
         cancelText="Cancelar"
         onConfirm={() => {
           if (selectedPaciente) {
-            setPacientes((prev) => prev.filter((p) => p.id !== selectedPaciente.id));
+            setPacientes((prev) =>
+              prev.filter((p) => p.id !== selectedPaciente.id)
+            );
           }
           setShowDeleteConfirm(false);
           setIsProntuarioOpen(false);
