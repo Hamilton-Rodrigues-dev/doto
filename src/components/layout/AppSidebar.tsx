@@ -193,18 +193,19 @@ export function AppSidebar({
                           key={item.path}
                           to={item.path}
                           className={cn(
-                            "flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium",
+                            "group flex items-center w-full gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
                             isActive
                               ? "bg-[#dbeafe] text-[#0b68f7]"
-                              : "text-slate-50 hover:bg-muted hover:text-foreground",
+                              : "text-slate-50 hover:bg-[#dbeafe] hover:text-[#0b68f7]",
                             collapsed && "justify-center px-2"
                           )}
                           onClick={handleNavClick}
                         >
                           <item.icon
                             className={cn(
-                              "w-5 h-5",
-                              isActive && "text-[#0b68f7]"
+                              "w-5 h-5 transition-colors",
+                              isActive && "text-[#0b68f7]",
+                              !isActive && "group-hover:text-[#0b68f7]"
                             )}
                           />
                           {!collapsed && <span>{item.label}</span>}

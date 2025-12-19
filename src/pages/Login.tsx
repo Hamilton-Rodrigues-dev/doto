@@ -131,7 +131,7 @@ export default function Login() {
 
 
         <p className="text-center text-sm text-muted-foreground mt-6">
-          © 2025 Dôto. Todos os direitos reservados.
+          © 2025 Dotô IA. Todos os direitos reservados.
         </p>
       </div>
     </div>
