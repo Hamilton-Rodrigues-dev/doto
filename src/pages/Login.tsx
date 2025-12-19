@@ -58,40 +58,29 @@ export default function Login() {
 
         {/* Form */}
         <div
-  className="
-    relative
-    rounded-2xl
-    shadow-2xl
+          className="
+            relative
+            rounded-2xl
+            shadow-2xl
+            backdrop-blur-xl
+            bg-white/10
+            border border-white/20
+          "
+        >
+          {/* Brilho sutil para efeito de vidro */}
+          <div
+            className="
+              pointer-events-none
+              absolute inset-0
+              rounded-2xl
+              bg-gradient-to-br
+              from-white/20
+              to-transparent
+            "
+          />
 
-    bg-[linear-gradient(to_bottom,#4C40FA_0%,#1A1752_60%,#333333_100%)]
-  "
->
-  {/* Overlay de vidro */}
-  <div
-    className="
-      pointer-events-none
-      absolute inset-0
-      rounded-2xl
-
-      backdrop-blur-xl
-      bg-black/20
-
-      border border-white/10
-    "
-  />
-
-  {/* Brilho sutil (opcional, mas recomendado) */}
-  <div
-    className="
-      pointer-events-none
-      absolute inset-0
-      rounded-2xl
-      bg-gradient-to-br from-white/10 to-transparent
-    "
-  />
-
-  {/* Conteúdo */}
-  <div className="relative z-10 p-6">
+          {/* Conteúdo */}
+          <div className="relative z-10 p-6">
     <form onSubmit={handleLogin} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="email" className="text-muted-foreground">
@@ -136,9 +125,9 @@ export default function Login() {
           Esqueci minha senha
         </button>
       </div>
-    </form>
-  </div>
-</div>
+          </form>
+          </div>
+        </div>
 
 
         <p className="text-center text-sm text-muted-foreground mt-6">
