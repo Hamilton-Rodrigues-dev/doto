@@ -18,7 +18,7 @@ export function PageHeader({
   actions 
 }: PageHeaderProps) {
   return (
-    <div className=" bg-card border-b border-border px-8 py-6">
+    <div className=" bg-card border-b border-border px-10 py-6">
       {breadcrumb && (
         <div className="flex items-center gap-2 text-sm mb-2">
           <span className="text-muted-foreground">Menu Principal</span>

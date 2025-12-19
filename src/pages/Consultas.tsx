@@ -22,6 +22,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "@/components/ui/tabs";
+import {
   Dialog,
   DialogContent,
   DialogHeader,
@@ -37,6 +43,10 @@ import { AgendamentoModal } from "@/components/agendamento/AgendamentoModal";
 import { toast } from "@/hooks/use-toast";
 import type { Consulta, StatusConsulta, StatusPagamentoConsulta } from "@/types/consulta";
 import type { Evento } from "@/types/agendamento";
+
+// ============================================================================
+// TYPES & CONSTANTS
+// ============================================================================
 
 type SortDirection = "asc" | "desc";
 type SortKey = keyof Consulta;
@@ -55,7 +65,32 @@ interface FiltroConsultas {
   dataFinal: string;
 }
 
-const initialFiltros: FiltroConsultas = {
+const TABS = {
+  ATUAL: "atual",
+  A_REALIZAR: "aRealizar",
+  REALIZADAS: "realizadas",
+} as const;
+
+type TabKey = typeof TABS[keyof typeof TABS];
+
+const TAB_LABELS: Record<TabKey, string> = {
+  [TABS.ATUAL]: "Consulta desse momento",
+  [TABS.A_REALIZAR]: "Consultas a realizar",
+  [TABS.REALIZADAS]: "Consultas realizadas",
+};
+
+const SORTABLE_COLUMNS: { key: SortKey; label: string; index: number }[] = [
+  { key: "paciente", label: "Paciente", index: 0 },
+  { key: "data", label: "Data", index: 1 },
+  { key: "retorno", label: "Retorno", index: 2 },
+  { key: "statusPagamento", label: "Status de pagamento", index: 3 },
+  { key: "statusConsulta", label: "Status da consulta", index: 4 },
+  { key: "localAtendimento", label: "Local de atendimento", index: 5 },
+];
+
+const LOCAIS_ATENDIMENTO = ["Presencial", "Teleconsulta"];
+
+const INITIAL_FILTROS: FiltroConsultas = {
   statusConsulta: "",
   statusPagamento: "",
   localAtendimento: "",
@@ -64,48 +99,101 @@ const initialFiltros: FiltroConsultas = {
   dataFinal: "",
 };
 
-const locaisAtendimento = ["Presencial", "Teleconsulta"];
+// ============================================================================
+// HELPER FUNCTIONS
+// ============================================================================
+
+const applyFilters = (data: Consulta[], filtros: FiltroConsultas): Consulta[] => {
+  return data.filter(c => {
+    if (filtros.statusConsulta && c.statusConsulta !== filtros.statusConsulta) return false;
+    if (filtros.statusPagamento && c.statusPagamento !== filtros.statusPagamento) return false;
+    if (filtros.localAtendimento && c.localAtendimento !== filtros.localAtendimento) return false;
+    if (filtros.retorno !== null && c.retorno !== filtros.retorno) return false;
+    return true;
+  });
+};
+
+const sortData = (data: Consulta[], config: SortConfig | null): Consulta[] => {
+  if (!config) return data;
+  
+  return [...data].sort((a, b) => {
+    const aValue = a[config.key];
+    const bValue = b[config.key];
+
+    if (aValue == null && bValue == null) return 0;
+    if (aValue == null) return config.direction === "asc" ? 1 : -1;
+    if (bValue == null) return config.direction === "asc" ? -1 : 1;
+
+    // Handle dates
+    if (config.key === "data") {
+      const [aDay, aMonth, aYear] = String(aValue).split("/").map(Number);
+      const [bDay, bMonth, bYear] = String(bValue).split("/").map(Number);
+      const aDate = new Date(2000 + aYear, aMonth - 1, aDay);
+      const bDate = new Date(2000 + bYear, bMonth - 1, bDay);
+      return config.direction === "asc" 
+        ? aDate.getTime() - bDate.getTime()
+        : bDate.getTime() - aDate.getTime();
+    }
+
+    // Handle booleans
+    if (typeof aValue === "boolean") {
+      return config.direction === "asc"
+        ? (aValue === bValue ? 0 : aValue ? -1 : 1)
+        : (aValue === bValue ? 0 : aValue ? 1 : -1);
+    }
+
+    // Handle strings
+    const aStr = String(aValue).toLowerCase();
+    const bStr = String(bValue).toLowerCase();
+    return config.direction === "asc" 
+      ? aStr.localeCompare(bStr, "pt-BR")
+      : bStr.localeCompare(aStr, "pt-BR");
+  });
+};
+
+// ============================================================================
+// COMPONENT: Consultas
+// ============================================================================
 
 export default function Consultas() {
   const navigate = useNavigate();
   const { getConsultaAtual, getConsultasARealizar, getConsultasRealizadas } = useConsultas();
   
+  // State
+  const [activeTab, setActiveTab] = useState<TabKey>(TABS.ATUAL);
   const [searchTerm, setSearchTerm] = useState("");
   const [isAgendamentoModalOpen, setIsAgendamentoModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [eventos, setEventos] = useState<Evento[]>([]);
-  const [filtros, setFiltros] = useState(initialFiltros);
-  const [filtrosAtivos, setFiltrosAtivos] = useState(initialFiltros);
+  const [filtros, setFiltros] = useState(INITIAL_FILTROS);
+  const [filtrosAtivos, setFiltrosAtivos] = useState(INITIAL_FILTROS);
   const [selectedConsulta, setSelectedConsulta] = useState<Consulta | null>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [sortConfigs, setSortConfigs] = useState<{
-    atual: SortConfig | null;
-    aRealizar: SortConfig | null;
-    realizadas: SortConfig | null;
-  }>({
-    atual: null,
-    aRealizar: null,
-    realizadas: null,
+  const [sortConfigs, setSortConfigs] = useState<Record<TabKey, SortConfig | null>>({
+    [TABS.ATUAL]: null,
+    [TABS.A_REALIZAR]: null,
+    [TABS.REALIZADAS]: null,
   });
 
+  // Data
   const consultaAtual = getConsultaAtual();
   const consultasARealizarRaw = getConsultasARealizar();
   const consultasRealizadasRaw = getConsultasRealizadas();
   
-  // Apply filters
-  const applyFilters = (data: Consulta[]) => {
-    return data.filter(c => {
-      if (filtrosAtivos.statusConsulta && c.statusConsulta !== filtrosAtivos.statusConsulta) return false;
-      if (filtrosAtivos.statusPagamento && c.statusPagamento !== filtrosAtivos.statusPagamento) return false;
-      if (filtrosAtivos.localAtendimento && c.localAtendimento !== filtrosAtivos.localAtendimento) return false;
-      if (filtrosAtivos.retorno !== null && c.retorno !== filtrosAtivos.retorno) return false;
-      return true;
-    });
-  };
+  const consultasARealizar = applyFilters(consultasARealizarRaw, filtrosAtivos);
+  const consultasRealizadas = applyFilters(consultasRealizadasRaw, filtrosAtivos);
 
-  const consultasARealizar = applyFilters(consultasARealizarRaw);
-  const consultasRealizadas = applyFilters(consultasRealizadasRaw);
+  const sortedConsultasARealizar = useMemo(
+    () => sortData(consultasARealizar, sortConfigs[TABS.A_REALIZAR]),
+    [consultasARealizar, sortConfigs]
+  );
 
+  const sortedConsultasRealizadas = useMemo(
+    () => sortData(consultasRealizadas, sortConfigs[TABS.REALIZADAS]),
+    [consultasRealizadas, sortConfigs]
+  );
+
+  // Handlers
   const handleIniciarConsulta = (consulta: Consulta) => {
     navigate(`/consultas/iniciada/${consulta.id}`);
   };
@@ -115,7 +203,7 @@ export default function Consultas() {
     setIsEditModalOpen(true);
   };
 
-  const handleSort = (table: "atual" | "aRealizar" | "realizadas", key: SortKey) => {
+  const handleSort = (table: TabKey, key: SortKey) => {
     setSortConfigs(prev => {
       const currentConfig = prev[table];
       if (currentConfig?.key === key) {
@@ -133,54 +221,6 @@ export default function Consultas() {
     });
   };
 
-  const sortData = (data: Consulta[], config: SortConfig | null) => {
-    if (!config) return data;
-    
-    return [...data].sort((a, b) => {
-      const aValue = a[config.key];
-      const bValue = b[config.key];
-
-      if (aValue == null && bValue == null) return 0;
-      if (aValue == null) return config.direction === "asc" ? 1 : -1;
-      if (bValue == null) return config.direction === "asc" ? -1 : 1;
-
-      // Handle dates
-      if (config.key === "data") {
-        const [aDay, aMonth, aYear] = String(aValue).split("/").map(Number);
-        const [bDay, bMonth, bYear] = String(bValue).split("/").map(Number);
-        const aDate = new Date(2000 + aYear, aMonth - 1, aDay);
-        const bDate = new Date(2000 + bYear, bMonth - 1, bDay);
-        return config.direction === "asc" 
-          ? aDate.getTime() - bDate.getTime()
-          : bDate.getTime() - aDate.getTime();
-      }
-
-      // Handle booleans
-      if (typeof aValue === "boolean") {
-        return config.direction === "asc"
-          ? (aValue === bValue ? 0 : aValue ? -1 : 1)
-          : (aValue === bValue ? 0 : aValue ? 1 : -1);
-      }
-
-      // Handle strings
-      const aStr = String(aValue).toLowerCase();
-      const bStr = String(bValue).toLowerCase();
-      return config.direction === "asc" 
-        ? aStr.localeCompare(bStr, "pt-BR")
-        : bStr.localeCompare(aStr, "pt-BR");
-    });
-  };
-
-  const sortedConsultasARealizar = useMemo(
-    () => sortData(consultasARealizar, sortConfigs.aRealizar),
-    [consultasARealizar, sortConfigs.aRealizar]
-  );
-
-  const sortedConsultasRealizadas = useMemo(
-    () => sortData(consultasRealizadas, sortConfigs.realizadas),
-    [consultasRealizadas, sortConfigs.realizadas]
-  );
-
   const handleSaveAgendamento = (evento: Evento) => {
     setEventos([...eventos, evento]);
   };
@@ -195,26 +235,22 @@ export default function Consultas() {
   };
 
   const handleClearFilter = () => {
-    setFiltros(initialFiltros);
-    setFiltrosAtivos(initialFiltros);
+    setFiltros(INITIAL_FILTROS);
+    setFiltrosAtivos(INITIAL_FILTROS);
     setIsFilterModalOpen(false);
   };
 
-  // Define sortable columns with their indices
-  const sortableColumns: { key: SortKey; label: string; index: number }[] = [
-    { key: "paciente", label: "Paciente", index: 0 },
-    { key: "data", label: "Data", index: 1 },
-    { key: "retorno", label: "Retorno", index: 2 },
-    { key: "statusPagamento", label: "Status de pagamento", index: 3 },
-    { key: "statusConsulta", label: "Status da consulta", index: 4 },
-    { key: "localAtendimento", label: "Local de atendimento", index: 5 },
-  ];
+  // ============================================================================
+  // SUB-COMPONENTS
+  // ============================================================================
 
-  const SortIcon = ({ tableKey, columnKey, columnIndex }: { tableKey: "atual" | "aRealizar" | "realizadas"; columnKey: SortKey; columnIndex: number }) => {
+  const SortIcon = ({ tableKey, columnKey, columnIndex }: { 
+    tableKey: TabKey; 
+    columnKey: SortKey; 
+    columnIndex: number 
+  }) => {
     const config = sortConfigs[tableKey];
     const isActive = config?.key === columnKey;
-    
-    // Show icon only if: it's active OR (no sort active AND it's first column)
     const shouldShow = isActive || (!config && columnIndex === 0);
     
     if (!shouldShow) return null;
@@ -229,10 +265,16 @@ export default function Consultas() {
     );
   };
 
-  const TableHeaders = ({ tableKey, showActionColumn = true }: { tableKey: "atual" | "aRealizar" | "realizadas"; showActionColumn?: boolean }) => (
+  const TableHeaders = ({ 
+    tableKey, 
+    showActionColumn = true 
+  }: { 
+    tableKey: TabKey; 
+    showActionColumn?: boolean;
+  }) => (
     <TableHeader>
       <TableRow className="bg-[#dbeafe] text-[#0b68f7] rounded-t-xl border border-[#cfe0ff] overflow-hidden">
-        {sortableColumns.map((col) => (
+        {SORTABLE_COLUMNS.map((col) => (
           <TableHead 
             key={col.key}
             className="text-[#0b68f7] font-semibold text-xs tracking-wider cursor-pointer bg-transparent border-none"
@@ -244,12 +286,24 @@ export default function Consultas() {
             </div>
           </TableHead>
         ))}
-        {showActionColumn && <TableHead className="text-[#0b68f7] font-semibold text-xs tracking-wider bg-transparent border-none"></TableHead>}
+        {showActionColumn && (
+          <TableHead className="text-[#0b68f7] font-semibold text-xs tracking-wider bg-transparent border-none"></TableHead>
+        )}
       </TableRow>
     </TableHeader>
   );
 
-  const ConsultaRow = ({ consulta, showAction = false, onClick, showActionColumn = true }: { consulta: Consulta; showAction?: boolean; onClick?: () => void; showActionColumn?: boolean }) => (
+  const ConsultaRow = ({ 
+    consulta, 
+    showAction = false, 
+    onClick, 
+    showActionColumn = true 
+  }: { 
+    consulta: Consulta; 
+    showAction?: boolean; 
+    onClick?: () => void; 
+    showActionColumn?: boolean;
+  }) => (
     <TableRow 
       className={cn("hover:bg-muted/50", onClick && "cursor-pointer")}
       onClick={onClick}
@@ -308,6 +362,10 @@ export default function Consultas() {
     </TableRow>
   );
 
+  // ============================================================================
+  // RENDER
+  // ============================================================================
+
   return (
     <AppLayout>
       <PageHeader
@@ -323,97 +381,115 @@ export default function Consultas() {
         }
       />
 
-      <div className="pt-8 space-y-6">
-        <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
-          <div className="flex flex-col lg:flex-row items-center space-y-2 justify-between px-8 py-3 border-border">
-            <h2 className="text-lg font-semibold text-muted-foreground">Consulta desse momento</h2>
-            {consultaAtual && (
-              <Button size="sm" className="gap-2 w-full lg:w-auto" onClick={() => handleIniciarConsulta(consultaAtual)}>
-                <Play className="w-3 h-3" />
-                Iniciar consulta
+      <div className="pt-8 px-8 ">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as TabKey)} className="w-full">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+            <TabsList className="w-full lg:w-auto">
+              <TabsTrigger value={TABS.ATUAL} className="flex-1 lg:flex-none">
+                {TAB_LABELS[TABS.ATUAL]}
+              </TabsTrigger>
+              <TabsTrigger value={TABS.A_REALIZAR} className="flex-1 lg:flex-none">
+                {TAB_LABELS[TABS.A_REALIZAR]}
+              </TabsTrigger>
+              <TabsTrigger value={TABS.REALIZADAS} className="flex-1 lg:flex-none">
+                {TAB_LABELS[TABS.REALIZADAS]}
+              </TabsTrigger>
+            </TabsList>
+
+            {activeTab !== TABS.ATUAL && (
+              <Button 
+                variant="outline" 
+                size="sm" 
+                className="gap-2 w-full lg:w-auto"
+                onClick={() => setIsFilterModalOpen(true)}
+              >
+                <Filter className="w-4 h-4" />
+                Filtrar
               </Button>
             )}
           </div>
-          {consultaAtual ? (
-            <Table className="overflow-x-auto w-full">
-              <TableHeaders tableKey="atual" showActionColumn={false} />
-              <TableBody>
-                <ConsultaRow consulta={consultaAtual} showAction={false} showActionColumn={false} />
-              </TableBody>
-            </Table>
-          ) : (
-            <div className="p-8 text-center">
-              <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
-                <CalendarX className="w-8 h-8" />
-                <p>Nenhuma consulta no dia de hoje</p>
-              </div>
+
+          {/* Tab: Consulta Atual */}
+          <TabsContent value={TABS.ATUAL} className="mt-0">
+            <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
+              {consultaAtual ? (
+                <>
+                  <div className="flex flex-col lg:flex-row items-center space-y-2 justify-between px-8 py-3 border-b border-border">
+                    <h2 className="text-lg font-semibold text-primary">
+                      Consulta agendada para agora
+                    </h2>
+                    <Button 
+                      size="sm" 
+                      className="gap-2 w-full lg:w-auto" 
+                      onClick={() => handleIniciarConsulta(consultaAtual)}
+                    >
+                      <Play className="w-3 h-3" />
+                      Iniciar consulta
+                    </Button>
+                  </div>
+                  <Table className="overflow-x-auto w-full ">
+                    <TableHeaders tableKey={TABS.ATUAL} showActionColumn={false} />
+                    <TableBody>
+                      <ConsultaRow consulta={consultaAtual} showActionColumn={false} />
+                    </TableBody>
+                  </Table>
+                </>
+              ) : (
+                <div className="p-12 text-center">
+                  <div className="flex flex-col items-center justify-center gap-3 text-muted-foreground">
+                    <CalendarX className="w-12 h-12" />
+                    <p className="text-lg font-medium">Nenhuma consulta agendada para agora</p>
+                    <p className="text-sm">Você não possui consultas marcadas para este momento</p>
+                  </div>
+                </div>
+              )}
             </div>
-          )}
-        </div>
+          </TabsContent>
 
-        {/* Consultas a ser realizada */}
-        <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 border-border">
-            <h2 className="text-lg font-semibold text-foreground">Consulta a ser realizada</h2>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-2 w-full md:w-auto"
-              onClick={() => setIsFilterModalOpen(true)}
-            >
-              <Filter className="w-4 h-4" />
-              Filtrar
-            </Button>
-          </div>
-          <Table className="min-w-[780px]">
-            <TableHeaders tableKey="aRealizar" />
-            <TableBody>
-              {sortedConsultasARealizar.length === 0 ? (
-                <EmptyState message="Nenhuma consulta agendada" />
-              ) : (
-                sortedConsultasARealizar.map((consulta) => (
-                  <ConsultaRow 
-                    key={consulta.id} 
-                    consulta={consulta} 
-                    onClick={() => handleRowClick(consulta)}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+          {/* Tab: Consultas a Realizar */}
+          <TabsContent value={TABS.A_REALIZAR} className="mt-0">
+            <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
+              <Table className="min-w-[780px]">
+                <TableHeaders tableKey={TABS.A_REALIZAR} />
+                <TableBody>
+                  {sortedConsultasARealizar.length === 0 ? (
+                    <EmptyState message="Nenhuma consulta agendada" />
+                  ) : (
+                    sortedConsultasARealizar.map((consulta) => (
+                      <ConsultaRow 
+                        key={consulta.id} 
+                        consulta={consulta} 
+                        onClick={() => handleRowClick(consulta)}
+                      />
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </TabsContent>
 
-        {/* Consultas já realizadas */}
-        <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between px-4 py-3 border-border">
-            <h2 className="text-lg font-semibold text-foreground">Consultas já realizadas</h2>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="gap-2 w-full md:w-auto"
-              onClick={() => setIsFilterModalOpen(true)}
-            >
-              <Filter className="w-4 h-4" />
-              Filtrar
-            </Button>
-          </div>
-          <Table className="min-w-[780px]">
-            <TableHeaders tableKey="realizadas" />
-            <TableBody>
-              {sortedConsultasRealizadas.length === 0 ? (
-                <EmptyState message="Nenhuma consulta realizada" />
-              ) : (
-                sortedConsultasRealizadas.map((consulta) => (
-                  <ConsultaRow 
-                    key={consulta.id} 
-                    consulta={consulta} 
-                    onClick={() => handleRowClick(consulta)}
-                  />
-                ))
-              )}
-            </TableBody>
-          </Table>
-        </div>
+          {/* Tab: Consultas Realizadas */}
+          <TabsContent value={TABS.REALIZADAS} className="mt-0">
+            <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
+              <Table className="min-w-[780px]">
+                <TableHeaders tableKey={TABS.REALIZADAS} />
+                <TableBody>
+                  {sortedConsultasRealizadas.length === 0 ? (
+                    <EmptyState message="Nenhuma consulta realizada" />
+                  ) : (
+                    sortedConsultasRealizadas.map((consulta) => (
+                      <ConsultaRow 
+                        key={consulta.id} 
+                        consulta={consulta} 
+                        onClick={() => handleRowClick(consulta)}
+                      />
+                    ))
+                  )}
+                </TableBody>
+              </Table>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
 
       {/* Agendamento Modal */}
@@ -478,7 +554,7 @@ export default function Consultas() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  {locaisAtendimento.map((local) => (
+                  {LOCAIS_ATENDIMENTO.map((local) => (
                     <SelectItem key={local} value={local}>{local}</SelectItem>
                   ))}
                 </SelectContent>

@@ -35,7 +35,6 @@ import type {
 import { TarefasKanban } from "@/components/TarefasKanban";
 import { STATUS_STYLE } from "@/lib/status-style";
 
-
 const tarefasData: Tarefa[] = [
   {
     id: 1,
@@ -238,14 +237,14 @@ export default function Tarefas() {
       label: "Status",
       sortable: true,
       render: (item) => (
-       <span
-      className={`
+        <span
+          className={`
         inline-flex items-center rounded-full px-3 py-1 text-xs font-medium
         ${STATUS_STYLE[item.status].badge}
       `}
-    >
-      {item.status}
-    </span>
+        >
+          {item.status}
+        </span>
       ),
     },
   ];
@@ -258,7 +257,7 @@ export default function Tarefas() {
         searchPlaceholder="Buscar tarefas"
         onSearch={setSearchTerm}
         actions={
-          <div className="flex flex-col gap-2 sm:flex-row">
+          <div className="flex w-full gap-2 flex-row">
             <Button
               variant="outline"
               className="w-full lg:w-auto flex items-center justify-center"
@@ -303,15 +302,14 @@ export default function Tarefas() {
           </div>
 
           {viewMode === "table" && (
-           <DataTable
-  data={filteredTarefas}
-  columns={columns}
-  onRowClick={handleRowClick}
-  minWidth="auto"
-  headerClassName="bg-blue-100"        // fundo
-  headerTextClassName="text-blue-700"  // texto + ícone
-/>
-
+            <DataTable
+              data={filteredTarefas}
+              columns={columns}
+              onRowClick={handleRowClick}
+              minWidth="auto"
+              headerClassName="bg-blue-100" // fundo
+              headerTextClassName="text-blue-700" // texto + ícone
+            />
           )}
         </div>
 
@@ -335,7 +333,6 @@ export default function Tarefas() {
             <DialogTitle className="text-primary">
               {editingId ? "Editar Tarefa" : "Nova Tarefa"}
             </DialogTitle>
-           
           </DialogHeader>
 
           <div className="space-y-4 py-4">
@@ -412,7 +409,7 @@ export default function Tarefas() {
           </div>
 
           <DialogFooter className="flex !justify-between items-center">
-             {editingId && (
+            {editingId && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -422,12 +419,12 @@ export default function Tarefas() {
                 <Trash2 className="w-5 h-5" />
               </Button>
             )}
-        <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4">
               <Button variant="outline" onClick={handleCloseModal}>
-              Cancelar
-            </Button>
-            <Button onClick={handleSave}>Salvar</Button>
-        </div>
+                Cancelar
+              </Button>
+              <Button onClick={handleSave}>Salvar</Button>
+            </div>
           </DialogFooter>
         </DialogContent>
       </Dialog>

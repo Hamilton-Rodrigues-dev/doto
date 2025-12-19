@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { AppLayout } from "@/components/layout/AppLayout";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Settings, Plug, Edit, Trash2, Save, X } from "lucide-react";
+import { Settings, Plug, Edit, Trash2, Save, X } from "lucide-react";
 import { useAgentes } from "@/contexts/AgentesContext";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { toast } from "@/hooks/use-toast";
@@ -47,16 +48,11 @@ export default function AgenteDetalhes() {
   if (!agente) {
     return (
       <AppLayout>
-        <div className="space-y-6">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/dashboard/agentes")}
-            className="gap-2 -ml-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Button>
+        <PageHeader
+          title="Detalhes do Agente"
+          breadcrumb="Agentes > Detalhes do Agente"
+        />
+        <div className="pt-8 px-8">
           <Card>
             <CardContent className="py-8 text-center text-muted-foreground">
               Agente não encontrado
@@ -66,10 +62,6 @@ export default function AgenteDetalhes() {
       </AppLayout>
     );
   }
-
-  const handleBack = () => {
-    navigate("/dashboard/agentes");
-  };
 
   const handleIntegracoes = () => {
     navigate(`/dashboard/agentes/${id}/integracoes`);
@@ -143,46 +135,31 @@ export default function AgenteDetalhes() {
 
   return (
     <AppLayout>
-      <div className="space-y-6">
-        {/* Header */}
-        <div className="space-y-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleBack}
-            className="gap-2 -ml-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Voltar
-          </Button>
-          <div className="flex items-start justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-foreground">Detalhes do Agente</h1>
-              <p className="text-muted-foreground mt-1">
-                Gerencie as configurações e integrações do seu agente
-              </p>
-            </div>
-            {!isEditing && (
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={handleEdit} className="gap-2">
-                  <Edit className="w-4 h-4" />
-                  Editar
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowDeleteConfirm(true)}
-                  className="gap-2 text-destructive hover:text-destructive"
-                >
-                  <Trash2 className="w-4 h-4" />
-                  Excluir
-                </Button>
-              </div>
-            )}
-          </div>
-        </div>
+      <PageHeader
+        title="Detalhes do Agente"
+        breadcrumb="Agentes > Detalhes do Agente"
+        actions={
+          !isEditing ? (
+            <>
+              <Button variant="outline" size="sm" onClick={handleEdit} className="gap-2">
+                <Edit className="w-4 h-4" />
+                Editar
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowDeleteConfirm(true)}
+                className="gap-2 text-destructive hover:text-destructive"
+              >
+                <Trash2 className="w-4 h-4" />
+                Excluir
+              </Button>
+            </>
+          ) : undefined
+        }
+      />
 
-        {/* Content */}
+      <div className="pt-8 px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <Card className="lg:col-span-2">
             <CardHeader>

@@ -320,7 +320,7 @@ export default function Financeiro() {
         }
       />
 
-      <div className="pt-8">
+      <div className="p-8 ">
         {/* KPI Cards */}
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
           <KPICard

@@ -387,7 +387,7 @@ export default function Agendamentos() {
         }
       />
 
-      <div className="pt-8">
+      <div className="pt-8 px-8 ">
         <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
           <div className="flex flex-col space-y-2 lg:flex-row items-center justify-between p-6 border-b border-border">
             <h2 className="text-xl font-bold text-foreground">

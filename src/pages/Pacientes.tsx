@@ -328,7 +328,7 @@ export default function Pacientes() {
         }
       />
 
-      <div className="pt-8">
+      <div className="pt-8 px-8 ">
         <div className="bg-card rounded-xl shadow-card border border-border overflow-hidden">
           <div className="flex items-center justify-between p-4  border-border">
             <h2 className="text-lg font-semibold text-foreground">

@@ -62,26 +62,9 @@ export function AppLayout({ children }: AppLayoutProps) {
           !isMobile && (sidebarCollapsed ? "lg:pl-[72px]" : "lg:pl-[272px]")
         )}
       >
-        <header className="h-16 border-b border-border flex items-center justify-between px-4 bg-card/60 backdrop-blur">
-          <button
-            className="lg:hidden inline-flex items-center justify-center p-2 rounded-md border border-border bg-background"
-            onClick={() => setSidebarOpen(true)}
-            aria-label="Abrir menu"
-          >
-            <Menu className="w-6 h-6" />
-          </button>
+      
 
-          <div className="flex-1 flex items-center justify-center lg:justify-start">
-            <h1 className="font-semibold pr-8 text-sm sm:text-base md:text-lg text-primary">
-              Dôto
-            </h1> 
-          </div>    
-
-          <div className="hidden sm:flex items-center gap-3">
-          </div>
-        </header>
-
-        <main className="flex-1 w-full px-4 pb-4 sm:px-6 lg:px-8">
+        <main className="flex-1 w-full px-4 pb-4 lg:px-0">
           {children}
         </main>
       </div>

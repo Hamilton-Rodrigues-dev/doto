@@ -6,27 +6,27 @@ import { toast } from "@/hooks/use-toast";
 const agentesIniciais: Agente[] = [
   {
     id: "1",
-    name: "Assistente de Atendimento",
-    model: "GPT-4.1 Mini",
+    name: "Agente de Atendimento",
+    model: "Gemini 3.5",
     description: "Agente especializado em atendimento ao cliente, capaz de responder perguntas frequentes e agendar consultas.",
-    createdAt: "2025-01-15T10:00:00Z",
-    updatedAt: "2025-01-15T10:00:00Z",
+    createdAt: "2025-12-01T10:00:00Z",
+    updatedAt: "2025-12-01T10:00:00Z",
   },
   {
     id: "2",
     name: "Consultor Médico",
-    model: "GPT-4 Turbo",
+    model: "GPT-5",
     description: "Agente focado em fornecer informações médicas básicas e orientações sobre saúde.",
-    createdAt: "2025-01-20T14:30:00Z",
-    updatedAt: "2025-01-20T14:30:00Z",
+    createdAt: "2025-12-01T14:30:00Z",
+    updatedAt: "2025-12-01T14:30:00Z",
   },
   {
     id: "3",
     name: "Agendador Inteligente",
     model: "GPT-4.1 Mini",
     description: "Especializado em gerenciar agendamentos, verificar disponibilidade e confirmar consultas.",
-    createdAt: "2025-01-25T09:15:00Z",
-    updatedAt: "2025-01-25T09:15:00Z",
+    createdAt: "2025-12-01T09:15:00Z",
+    updatedAt: "2025-12-01T09:15:00Z",
   },
 ];
 
